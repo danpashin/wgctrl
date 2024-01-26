@@ -4,8 +4,8 @@
 package wgctrl
 
 import (
-	"golang.zx2c4.com/wireguard/wgctrl/internal/wginternal"
-	"golang.zx2c4.com/wireguard/wgctrl/internal/wguser"
+	"github.com/danpashin/wgctrl/internal/wginternal"
+	"github.com/danpashin/wgctrl/internal/wguser"
 )
 
 // newClients configures wginternal.Clients for systems which only support

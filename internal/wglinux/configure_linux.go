@@ -9,10 +9,11 @@ import (
 	"net"
 	"unsafe"
 
+	"github.com/danpashin/wgctrl/internal/wginternal"
+	"github.com/danpashin/wgctrl/wgtypes"
 	"github.com/mdlayher/netlink"
 	"github.com/mdlayher/netlink/nlenc"
 	"golang.org/x/sys/unix"
-	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
 )
 
 // configAttrs creates the required encoded netlink attributes to configure

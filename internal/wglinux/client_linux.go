@@ -9,12 +9,12 @@ import (
 	"os"
 	"syscall"
 
+	"github.com/danpashin/wgctrl/internal/wginternal"
+	"github.com/danpashin/wgctrl/wgtypes"
 	"github.com/mdlayher/genetlink"
 	"github.com/mdlayher/netlink"
 	"github.com/mdlayher/netlink/nlenc"
 	"golang.org/x/sys/unix"
-	"golang.zx2c4.com/wireguard/wgctrl/internal/wginternal"
-	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
 )
 
 var _ wginternal.Client = &Client{}

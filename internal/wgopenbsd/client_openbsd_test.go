@@ -11,11 +11,11 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/danpashin/wgctrl/internal/wgopenbsd/internal/wgh"
+	"github.com/danpashin/wgctrl/internal/wgtest"
+	"github.com/danpashin/wgctrl/wgtypes"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/sys/unix"
-	"golang.zx2c4.com/wireguard/wgctrl/internal/wgopenbsd/internal/wgh"
-	"golang.zx2c4.com/wireguard/wgctrl/internal/wgtest"
-	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
 )
 
 func TestClientDevices(t *testing.T) {

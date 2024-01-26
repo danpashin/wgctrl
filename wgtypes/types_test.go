@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/danpashin/wgctrl/wgtypes"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/crypto/curve25519"
-	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
 )
 
 func TestPreparedKeys(t *testing.T) {

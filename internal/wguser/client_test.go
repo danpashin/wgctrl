@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/danpashin/wgctrl/wgtypes"
 	"github.com/google/go-cmp/cmp"
-	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
 )
 
 // A known device name used throughout unit and integration tests.

@@ -9,14 +9,14 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/danpashin/wgctrl/internal/wgtest"
+	"github.com/danpashin/wgctrl/wgtypes"
 	"github.com/mdlayher/genetlink"
 	"github.com/mdlayher/genetlink/genltest"
 	"github.com/mdlayher/netlink"
 	"github.com/mdlayher/netlink/nlenc"
 	"github.com/mikioh/ipaddr"
 	"golang.org/x/sys/unix"
-	"golang.zx2c4.com/wireguard/wgctrl/internal/wgtest"
-	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
 )
 
 func TestLinuxClientConfigureDevice(t *testing.T) {

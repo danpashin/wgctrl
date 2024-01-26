@@ -9,10 +9,11 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/danpashin/wgctrl/internal/wginternal"
+	"github.com/danpashin/wgctrl/wgtypes"
 	"github.com/mdlayher/genetlink"
 	"github.com/mdlayher/netlink"
 	"golang.org/x/sys/unix"
-	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
 )
 
 // parseDevice parses a Device from a slice of generic netlink messages,
