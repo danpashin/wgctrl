@@ -98,6 +98,43 @@ func writeConfig(w io.Writer, cfg wgtypes.Config) {
 			fmt.Fprintf(w, "allowed_ip=%s\n", ip.String())
 		}
 	}
+
+	advancedSecCfg := cfg.AdvancedSecurityConfig
+	if advancedSecCfg.JunkPacketCount != nil {
+		fmt.Fprintf(w, "jc=%d\n", *advancedSecCfg.JunkPacketCount)
+	}
+
+	if advancedSecCfg.JunkPacketMinSize != nil {
+		fmt.Fprintf(w, "jmin=%d\n", *advancedSecCfg.JunkPacketMinSize)
+	}
+
+	if advancedSecCfg.JunkPacketMaxSize != nil {
+		fmt.Fprintf(w, "jmax=%d\n", *advancedSecCfg.JunkPacketMaxSize)
+	}
+
+	if advancedSecCfg.InitPacketJunkSize != nil {
+		fmt.Fprintf(w, "s1=%d\n", *advancedSecCfg.InitPacketJunkSize)
+	}
+
+	if advancedSecCfg.ResponsePacketJunkSize != nil {
+		fmt.Fprintf(w, "s2=%d\n", *advancedSecCfg.ResponsePacketJunkSize)
+	}
+
+	if advancedSecCfg.InitPacketMagicHeader != nil {
+		fmt.Fprintf(w, "h1=%d\n", *advancedSecCfg.InitPacketMagicHeader)
+	}
+
+	if advancedSecCfg.ResponsePacketMagicHeader != nil {
+		fmt.Fprintf(w, "h2=%d\n", *advancedSecCfg.ResponsePacketMagicHeader)
+	}
+
+	if advancedSecCfg.UnderloadPacketMagicHeader != nil {
+		fmt.Fprintf(w, "h3=%d\n", *advancedSecCfg.UnderloadPacketMagicHeader)
+	}
+
+	if advancedSecCfg.TransportPacketMagicHeader != nil {
+		fmt.Fprintf(w, "h4=%d\n", *advancedSecCfg.TransportPacketMagicHeader)
+	}
 }
 
 // hexKey encodes a wgtypes.Key into a hexadecimal string.

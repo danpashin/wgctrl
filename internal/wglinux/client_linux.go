@@ -17,6 +17,10 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+const (
+	AnmeziaWgGenlName = "amneziawg"
+)
+
 var _ wginternal.Client = &Client{}
 
 // A Client provides access to Linux WireGuard netlink information.
@@ -29,7 +33,7 @@ type Client struct {
 
 // New creates a new Client and returns whether or not the generic netlink
 // interface is available.
-func New() (*Client, bool, error) {
+func New(clientType wginternal.WgClientType) (*Client, bool, error) {
 	c, err := genetlink.Dial(nil)
 	if err != nil {
 		return nil, false, err
@@ -43,12 +47,21 @@ func New() (*Client, bool, error) {
 		_ = c.SetOption(o, true)
 	}
 
-	return initClient(c)
+	return initClient(c, clientType)
 }
 
 // initClient is the internal Client constructor used in some tests.
-func initClient(c *genetlink.Conn) (*Client, bool, error) {
-	f, err := c.GetFamily(unix.WG_GENL_NAME)
+func initClient(c *genetlink.Conn, clientType wginternal.WgClientType) (*Client, bool, error) {
+
+	var netlinkFamily string
+	switch clientType {
+	case wginternal.WgAmneziaClient:
+		netlinkFamily = AnmeziaWgGenlName
+	default:
+		netlinkFamily = unix.WG_GENL_NAME
+	}
+
+	f, err := c.GetFamily(netlinkFamily)
 	if err != nil {
 		_ = c.Close()
 
@@ -246,6 +259,7 @@ func parseRTNLInterfaces(msgs []syscall.NetlinkMessage) ([]string, error) {
 
 // wgKind is the IFLA_INFO_KIND value for WireGuard devices.
 const wgKind = "wireguard"
+const amneziaWgKind = "amneziawg"
 
 // isWGKind parses netlink attributes to determine if a link is a WireGuard
 // device, then populates ok with the result.
@@ -261,7 +275,8 @@ func isWGKind(ok *bool) func(b []byte) error {
 				continue
 			}
 
-			if ad.String() == wgKind {
+			adStr := ad.String()
+			if adStr == wgKind || adStr == amneziaWgKind {
 				*ok = true
 				return nil
 			}

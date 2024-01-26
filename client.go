@@ -1,7 +1,6 @@
 package wgctrl
 
 import (
-	"errors"
 	"os"
 
 	"github.com/danpashin/wgctrl/internal/wginternal"
@@ -45,11 +44,7 @@ func (c *Client) Close() error {
 func (c *Client) Devices() ([]*wgtypes.Device, error) {
 	var out []*wgtypes.Device
 	for _, wgc := range c.cs {
-		devs, err := wgc.Devices()
-		if err != nil {
-			return nil, err
-		}
-
+		devs, _ := wgc.Devices()
 		out = append(out, devs...)
 	}
 
@@ -63,13 +58,8 @@ func (c *Client) Devices() ([]*wgtypes.Device, error) {
 func (c *Client) Device(name string) (*wgtypes.Device, error) {
 	for _, wgc := range c.cs {
 		d, err := wgc.Device(name)
-		switch {
-		case err == nil:
+		if err == nil {
 			return d, nil
-		case errors.Is(err, os.ErrNotExist):
-			continue
-		default:
-			return nil, err
 		}
 	}
 
@@ -87,13 +77,8 @@ func (c *Client) Device(name string) (*wgtypes.Device, error) {
 func (c *Client) ConfigureDevice(name string, cfg wgtypes.Config) error {
 	for _, wgc := range c.cs {
 		err := wgc.ConfigureDevice(name, cfg)
-		switch {
-		case err == nil:
+		if err == nil {
 			return nil
-		case errors.Is(err, os.ErrNotExist):
-			continue
-		default:
-			return err
 		}
 	}
 

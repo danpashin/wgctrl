@@ -90,6 +90,24 @@ func parseDeviceLoop(m genetlink.Message) (*wgtypes.Device, error) {
 
 				return nil
 			})
+		case wginternal.WGDEVICE_A_JC:
+			d.AdvancedSecurity.JunkPacketCount = ad.Uint16()
+		case wginternal.WGDEVICE_A_JMIN:
+			d.AdvancedSecurity.JunkPacketMinSize = ad.Uint16()
+		case wginternal.WGDEVICE_A_JMAX:
+			d.AdvancedSecurity.JunkPacketMaxSize = ad.Uint16()
+		case wginternal.WGDEVICE_A_S1:
+			d.AdvancedSecurity.InitPacketJunkSize = ad.Uint16()
+		case wginternal.WGDEVICE_A_S2:
+			d.AdvancedSecurity.ResponsePacketJunkSize = ad.Uint16()
+		case wginternal.WGDEVICE_A_H1:
+			d.AdvancedSecurity.InitPacketMagicHeader = ad.Uint32()
+		case wginternal.WGDEVICE_A_H2:
+			d.AdvancedSecurity.ResponsePacketMagicHeader = ad.Uint32()
+		case wginternal.WGDEVICE_A_H3:
+			d.AdvancedSecurity.UnderloadPacketMagicHeader = ad.Uint32()
+		case wginternal.WGDEVICE_A_H4:
+			d.AdvancedSecurity.TransportPacketMagicHeader = ad.Uint32()
 		}
 	}
 

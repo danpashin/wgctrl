@@ -132,6 +132,24 @@ func (dp *deviceParser) Parse(key, value string) {
 		dp.d.ListenPort = dp.parseInt(value)
 	case "fwmark":
 		dp.d.FirewallMark = dp.parseInt(value)
+	case "jc":
+		dp.d.AdvancedSecurity.JunkPacketCount = uint16(dp.parseInt(value))
+	case "jmin":
+		dp.d.AdvancedSecurity.JunkPacketMinSize = uint16(dp.parseInt(value))
+	case "jmax":
+		dp.d.AdvancedSecurity.JunkPacketMaxSize = uint16(dp.parseInt(value))
+	case "s1":
+		dp.d.AdvancedSecurity.InitPacketJunkSize = uint16(dp.parseInt(value))
+	case "s2":
+		dp.d.AdvancedSecurity.ResponsePacketJunkSize = uint16(dp.parseInt(value))
+	case "h1":
+		dp.d.AdvancedSecurity.InitPacketMagicHeader = uint32(dp.parseInt(value))
+	case "h2":
+		dp.d.AdvancedSecurity.ResponsePacketMagicHeader = uint32(dp.parseInt(value))
+	case "h3":
+		dp.d.AdvancedSecurity.UnderloadPacketMagicHeader = uint32(dp.parseInt(value))
+	case "h4":
+		dp.d.AdvancedSecurity.TransportPacketMagicHeader = uint32(dp.parseInt(value))
 	}
 }
 

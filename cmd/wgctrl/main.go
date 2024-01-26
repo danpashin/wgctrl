@@ -53,6 +53,17 @@ func printDevice(d *wgtypes.Device) {
   listening port: %d
 
 `
+	const advancedSecF = `  JC: %d
+  JMin: %d
+  JMax: %d
+  S1: %d
+  S2: %d
+  H1: %d
+  H2: %d
+  H3: %d
+  H4: %d
+
+`
 
 	fmt.Printf(
 		f,
@@ -60,6 +71,21 @@ func printDevice(d *wgtypes.Device) {
 		d.Type.String(),
 		d.PublicKey.String(),
 		d.ListenPort)
+
+	if d.AdvancedSecurity.IsEnabled() {
+		fmt.Printf(
+			advancedSecF,
+			d.AdvancedSecurity.JunkPacketCount,
+			d.AdvancedSecurity.JunkPacketMinSize,
+			d.AdvancedSecurity.JunkPacketMaxSize,
+			d.AdvancedSecurity.InitPacketJunkSize,
+			d.AdvancedSecurity.ResponsePacketJunkSize,
+			d.AdvancedSecurity.InitPacketMagicHeader,
+			d.AdvancedSecurity.ResponsePacketMagicHeader,
+			d.AdvancedSecurity.UnderloadPacketMagicHeader,
+			d.AdvancedSecurity.TransportPacketMagicHeader,
+		)
+	}
 }
 
 func printPeer(p wgtypes.Peer) {

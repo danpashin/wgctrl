@@ -50,6 +50,43 @@ func configAttrs(name string, cfg wgtypes.Config) ([]byte, error) {
 		})
 	}
 
+	advancedSecCfg := cfg.AdvancedSecurityConfig
+	if advancedSecCfg.JunkPacketCount != nil {
+		ae.Uint16(wginternal.WGDEVICE_A_JC, *advancedSecCfg.JunkPacketCount)
+	}
+
+	if advancedSecCfg.JunkPacketMinSize != nil {
+		ae.Uint16(wginternal.WGDEVICE_A_JMIN, *advancedSecCfg.JunkPacketMinSize)
+	}
+
+	if advancedSecCfg.JunkPacketMaxSize != nil {
+		ae.Uint16(wginternal.WGDEVICE_A_JMAX, *advancedSecCfg.JunkPacketMaxSize)
+	}
+
+	if advancedSecCfg.InitPacketJunkSize != nil {
+		ae.Uint16(wginternal.WGDEVICE_A_S1, *advancedSecCfg.InitPacketJunkSize)
+	}
+
+	if advancedSecCfg.ResponsePacketJunkSize != nil {
+		ae.Uint16(wginternal.WGDEVICE_A_S2, *advancedSecCfg.ResponsePacketJunkSize)
+	}
+
+	if advancedSecCfg.InitPacketMagicHeader != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_H1, *advancedSecCfg.InitPacketMagicHeader)
+	}
+
+	if advancedSecCfg.ResponsePacketMagicHeader != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_H2, *advancedSecCfg.ResponsePacketMagicHeader)
+	}
+
+	if advancedSecCfg.UnderloadPacketMagicHeader != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_H3, *advancedSecCfg.UnderloadPacketMagicHeader)
+	}
+
+	if advancedSecCfg.TransportPacketMagicHeader != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_H4, *advancedSecCfg.TransportPacketMagicHeader)
+	}
+
 	return ae.Encode()
 }
 

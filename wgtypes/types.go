@@ -41,6 +41,42 @@ func (dt DeviceType) String() string {
 	}
 }
 
+type AdvancedSecurity struct {
+	// JC
+	JunkPacketCount uint16
+	// JMin
+	JunkPacketMinSize uint16
+	//JMax
+	JunkPacketMaxSize uint16
+	// S1
+	InitPacketJunkSize uint16
+	// S2
+	ResponsePacketJunkSize uint16
+	// H1
+	InitPacketMagicHeader uint32
+	// H2
+	ResponsePacketMagicHeader uint32
+	// H3
+	UnderloadPacketMagicHeader uint32
+	// H4
+	TransportPacketMagicHeader uint32
+}
+
+func (a AdvancedSecurity) IsEnabled() bool {
+	ret := false
+	ret = ret || a.JunkPacketCount != 0
+	ret = ret || a.JunkPacketMinSize != 0
+	ret = ret || a.JunkPacketMaxSize != 0
+	ret = ret || a.InitPacketJunkSize != 0
+	ret = ret || a.ResponsePacketJunkSize != 0
+	ret = ret || a.InitPacketMagicHeader != 0
+	ret = ret || a.ResponsePacketMagicHeader != 0
+	ret = ret || a.UnderloadPacketMagicHeader != 0
+	ret = ret || a.TransportPacketMagicHeader != 0
+
+	return ret
+}
+
 // A Device is a WireGuard device.
 type Device struct {
 	// Name is the name of the device.
@@ -63,6 +99,8 @@ type Device struct {
 	// The firewall mark can be used in conjunction with firewall software to
 	// take action on outgoing WireGuard packets.
 	FirewallMark int
+
+	AdvancedSecurity AdvancedSecurity
 
 	// Peers is the list of network peers associated with this device.
 	Peers []Peer
@@ -204,6 +242,18 @@ type Peer struct {
 	ProtocolVersion int
 }
 
+type AdvancedSecurityConfig struct {
+	JunkPacketCount            *uint16
+	JunkPacketMinSize          *uint16
+	JunkPacketMaxSize          *uint16
+	InitPacketJunkSize         *uint16
+	ResponsePacketJunkSize     *uint16
+	InitPacketMagicHeader      *uint32
+	ResponsePacketMagicHeader  *uint32
+	UnderloadPacketMagicHeader *uint32
+	TransportPacketMagicHeader *uint32
+}
+
 // A Config is a WireGuard device configuration.
 //
 // Because the zero value of some Go types may be significant to WireGuard for
@@ -226,6 +276,8 @@ type Config struct {
 	// ReplacePeers specifies if the Peers in this configuration should replace
 	// the existing peer list, instead of appending them to the existing list.
 	ReplacePeers bool
+
+	AdvancedSecurityConfig AdvancedSecurityConfig
 
 	// Peers specifies a list of peer configurations to apply to a device.
 	Peers []PeerConfig

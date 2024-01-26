@@ -15,7 +15,15 @@ func newClients() ([]wginternal.Client, error) {
 
 	// Linux has an in-kernel WireGuard implementation. Determine if it is
 	// available and make use of it if so.
-	kc, ok, err := wglinux.New()
+	kc, ok, err := wglinux.New(wginternal.WgNativeClient)
+	if err != nil {
+		return nil, err
+	}
+	if ok {
+		clients = append(clients, kc)
+	}
+
+	kc, ok, err = wglinux.New(wginternal.WgAmneziaClient)
 	if err != nil {
 		return nil, err
 	}
