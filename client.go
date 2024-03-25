@@ -15,6 +15,12 @@ type Client struct {
 	// Seamlessly use different wginternal.Client implementations to provide an
 	// interface similar to wg(8).
 	cs []wginternal.Client
+
+	clientType wgtypes.ClientType
+}
+
+func (c *Client) Type() wgtypes.ClientType {
+	return c.clientType
 }
 
 // New creates a new Client.
@@ -25,7 +31,8 @@ func New(clientType wgtypes.ClientType) (*Client, error) {
 	}
 
 	return &Client{
-		cs: cs,
+		cs:         cs,
+		clientType: clientType,
 	}, nil
 }
 
