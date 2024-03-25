@@ -112,7 +112,7 @@ func integrationClient(t *testing.T) (*wgctrl.Client, func()) {
 			env, confirm)
 	}
 
-	c, err := wgctrl.New()
+	c, err := wgctrl.New(wgtypes.NativeClient)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			t.Skip("skipping, wgctrl is not available on this system")

@@ -16,32 +16,38 @@ import (
 func main() {
 	flag.Parse()
 
-	c, err := wgctrl.New()
-	if err != nil {
-		log.Fatalf("failed to open wgctrl: %v", err)
-	}
-	defer c.Close()
-
-	var devices []*wgtypes.Device
-	if device := flag.Arg(0); device != "" {
-		d, err := c.Device(device)
-		if err != nil {
-			log.Fatalf("failed to get device %q: %v", device, err)
-		}
-
-		devices = append(devices, d)
-	} else {
-		devices, err = c.Devices()
-		if err != nil {
-			log.Fatalf("failed to get devices: %v", err)
-		}
+	clientTypes := [](wgtypes.ClientType){
+		wgtypes.NativeClient, wgtypes.AmneziaClient,
 	}
 
-	for _, d := range devices {
-		printDevice(d)
+	for _, clientType := range clientTypes {
+		c, err := wgctrl.New(clientType)
+		if err != nil {
+			log.Fatalf("failed to open wgctrl: %v", err)
+		}
+		defer c.Close()
 
-		for _, p := range d.Peers {
-			printPeer(p)
+		var devices []*wgtypes.Device
+		if device := flag.Arg(0); device != "" {
+			d, err := c.Device(device)
+			if err != nil {
+				log.Fatalf("failed to get device %q: %v", device, err)
+			}
+
+			devices = append(devices, d)
+		} else {
+			devices, err = c.Devices()
+			if err != nil {
+				log.Fatalf("failed to get devices: %v", err)
+			}
+		}
+
+		for _, d := range devices {
+			printDevice(d)
+
+			for _, p := range d.Peers {
+				printPeer(p)
+			}
 		}
 	}
 }

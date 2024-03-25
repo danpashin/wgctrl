@@ -12,12 +12,7 @@ import (
 // TODO(mdlayher): consider exposing in API.
 var ErrReadOnly = errors.New("driver is read-only")
 
-type WgClientType int
-
 const (
-	WgNativeClient  WgClientType = 0
-	WgAmneziaClient WgClientType = 1
-
 	WGDEVICE_A_JC   = 0x9
 	WGDEVICE_A_JMIN = 0xA
 	WGDEVICE_A_JMAX = 0xB

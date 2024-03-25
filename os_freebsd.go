@@ -7,10 +7,11 @@ import (
 	"github.com/danpashin/wgctrl/internal/wgfreebsd"
 	"github.com/danpashin/wgctrl/internal/wginternal"
 	"github.com/danpashin/wgctrl/internal/wguser"
+	"github.com/danpashin/wgctrl/wgtypes"
 )
 
 // newClients configures wginternal.Clients for FreeBSD systems.
-func newClients() ([]wginternal.Client, error) {
+func newClients(clientType wgtypes.ClientType) ([]wginternal.Client, error) {
 	var clients []wginternal.Client
 
 	// FreeBSD has an in-kernel WireGuard implementation. Determine if it is
@@ -23,7 +24,7 @@ func newClients() ([]wginternal.Client, error) {
 		clients = append(clients, kc)
 	}
 
-	uc, err := wguser.New()
+	uc, err := wguser.New(clientType)
 	if err != nil {
 		return nil, err
 	}

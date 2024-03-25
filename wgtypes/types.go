@@ -23,6 +23,13 @@ const (
 	Userspace
 )
 
+type ClientType int
+
+const (
+	NativeClient ClientType = iota
+	AmneziaClient
+)
+
 // String returns the string representation of a DeviceType.
 func (dt DeviceType) String() string {
 	switch dt {

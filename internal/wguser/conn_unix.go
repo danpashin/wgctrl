@@ -5,6 +5,7 @@ package wguser
 
 import (
 	"errors"
+	"github.com/danpashin/wgctrl/wgtypes"
 	"io/fs"
 	"net"
 	"os"
@@ -17,12 +18,21 @@ func dial(device string) (net.Conn, error) {
 }
 
 // find is the default implementation of Client.find.
-func find() ([]string, error) {
-	return findUNIXSockets([]string{
+func find(clientType wgtypes.ClientType) ([]string, error) {
+	socketsPaths := []string{
 		// It seems that /var/run is a common location between Linux and the
 		// BSDs, even though it's a symlink on Linux.
 		"/var/run/wireguard",
-	})
+	}
+
+	switch clientType {
+	case wgtypes.AmneziaClient:
+		socketsPaths = []string{"/var/run/amneziawg"}
+	default:
+		break
+	}
+
+	return findUNIXSockets(socketsPaths)
 }
 
 // findUNIXSockets looks for UNIX socket files in the specified directories.

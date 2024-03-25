@@ -18,8 +18,8 @@ type Client struct {
 }
 
 // New creates a new Client.
-func New() (*Client, error) {
-	cs, err := newClients()
+func New(clientType wgtypes.ClientType) (*Client, error) {
+	cs, err := newClients(clientType)
 	if err != nil {
 		return nil, err
 	}

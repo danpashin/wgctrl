@@ -15,18 +15,20 @@ var _ wginternal.Client = &Client{}
 
 // A Client provides access to userspace WireGuard device information.
 type Client struct {
-	dial func(device string) (net.Conn, error)
-	find func() ([]string, error)
+	dial       func(device string) (net.Conn, error)
+	find       func(clientType wgtypes.ClientType) ([]string, error)
+	clientType wgtypes.ClientType
 }
 
 // New creates a new Client.
-func New() (*Client, error) {
+func New(clientType wgtypes.ClientType) (*Client, error) {
 	return &Client{
 		// Operating system-specific functions which can identify and connect
 		// to userspace WireGuard devices. These functions can also be
 		// overridden for tests.
-		dial: dial,
-		find: find,
+		dial:       dial,
+		find:       find,
+		clientType: clientType,
 	}, nil
 }
 
@@ -35,7 +37,7 @@ func (c *Client) Close() error { return nil }
 
 // Devices implements wginternal.Client.
 func (c *Client) Devices() ([]*wgtypes.Device, error) {
-	devices, err := c.find()
+	devices, err := c.find(c.clientType)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +57,7 @@ func (c *Client) Devices() ([]*wgtypes.Device, error) {
 
 // Device implements wginternal.Client.
 func (c *Client) Device(name string) (*wgtypes.Device, error) {
-	devices, err := c.find()
+	devices, err := c.find(c.clientType)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +75,7 @@ func (c *Client) Device(name string) (*wgtypes.Device, error) {
 
 // ConfigureDevice implements wginternal.Client.
 func (c *Client) ConfigureDevice(name string, cfg wgtypes.Config) error {
-	devices, err := c.find()
+	devices, err := c.find(c.clientType)
 	if err != nil {
 		return err
 	}

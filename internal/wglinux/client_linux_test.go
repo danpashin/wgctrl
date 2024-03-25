@@ -6,7 +6,6 @@ package wglinux
 import (
 	"errors"
 	"fmt"
-	"github.com/danpashin/wgctrl/internal/wginternal"
 	"net"
 	"os"
 	"os/user"
@@ -137,7 +136,7 @@ func TestLinuxClientIsPermission(t *testing.T) {
 		t.Skip("skipping, test must be run without elevated privileges")
 	}
 
-	c, ok, err := New(wginternal.WgNativeClient)
+	c, ok, err := New(wgtypes.NativeClient)
 	if err != nil {
 		t.Fatalf("failed to create Client: %v", err)
 	}
@@ -159,7 +158,7 @@ func Test_initClientNotExist(t *testing.T) {
 		return nil, genltest.Error(int(unix.ENOENT))
 	})
 
-	_, ok, err := initClient(conn, wginternal.WgNativeClient)
+	_, ok, err := initClient(conn, wgtypes.NativeClient)
 	if err != nil {
 		t.Fatalf("failed to open Client: %v", err)
 	}
@@ -291,7 +290,7 @@ func testClient(t *testing.T, fn genltest.Func) *Client {
 
 	conn := genltest.Dial(genltest.ServeFamily(family, fn))
 
-	c, ok, err := initClient(conn, wginternal.WgNativeClient)
+	c, ok, err := initClient(conn, wgtypes.NativeClient)
 	if err != nil {
 		t.Fatalf("failed to open Client: %v", err)
 	}

@@ -33,7 +33,7 @@ type Client struct {
 
 // New creates a new Client and returns whether or not the generic netlink
 // interface is available.
-func New(clientType wginternal.WgClientType) (*Client, bool, error) {
+func New(clientType wgtypes.ClientType) (*Client, bool, error) {
 	c, err := genetlink.Dial(nil)
 	if err != nil {
 		return nil, false, err
@@ -51,11 +51,11 @@ func New(clientType wginternal.WgClientType) (*Client, bool, error) {
 }
 
 // initClient is the internal Client constructor used in some tests.
-func initClient(c *genetlink.Conn, clientType wginternal.WgClientType) (*Client, bool, error) {
+func initClient(c *genetlink.Conn, clientType wgtypes.ClientType) (*Client, bool, error) {
 
 	var netlinkFamily string
 	switch clientType {
-	case wginternal.WgAmneziaClient:
+	case wgtypes.AmneziaClient:
 		netlinkFamily = AnmeziaWgGenlName
 	default:
 		netlinkFamily = unix.WG_GENL_NAME
