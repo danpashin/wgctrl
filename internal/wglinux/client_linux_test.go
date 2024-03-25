@@ -31,11 +31,11 @@ const (
 func TestLinuxClientDevicesEmpty(t *testing.T) {
 	tests := []struct {
 		name string
-		fn   func() ([]string, error)
+		fn   func(clientType wgtypes.ClientType) ([]string, error)
 	}{
 		{
 			name: "no interfaces",
-			fn: func() ([]string, error) {
+			fn: func(clientType wgtypes.ClientType) ([]string, error) {
 				return nil, nil
 			},
 		},
@@ -260,7 +260,7 @@ func Test_parseRTNLInterfaces(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ifis, err := parseRTNLInterfaces(tt.msgs)
+			ifis, err := parseRTNLInterfaces(tt.msgs, wgtypes.NativeClient)
 
 			if tt.ok && err != nil {
 				t.Fatalf("failed to parse interfaces: %v", err)
@@ -298,7 +298,7 @@ func testClient(t *testing.T, fn genltest.Func) *Client {
 		t.Fatal("the generic netlink API was not available from genltest")
 	}
 
-	c.interfaces = func() ([]string, error) {
+	c.interfaces = func(clientType wgtypes.ClientType) ([]string, error) {
 		return []string{okName}, nil
 	}
 

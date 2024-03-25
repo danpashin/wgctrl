@@ -25,10 +25,11 @@ var _ wginternal.Client = &Client{}
 
 // A Client provides access to Linux WireGuard netlink information.
 type Client struct {
-	c      *genetlink.Conn
-	family genetlink.Family
+	c          *genetlink.Conn
+	family     genetlink.Family
+	clientType wgtypes.ClientType
 
-	interfaces func() ([]string, error)
+	interfaces func(clientType wgtypes.ClientType) ([]string, error)
 }
 
 // New creates a new Client and returns whether or not the generic netlink
@@ -74,8 +75,9 @@ func initClient(c *genetlink.Conn, clientType wgtypes.ClientType) (*Client, bool
 	}
 
 	return &Client{
-		c:      c,
-		family: f,
+		c:          c,
+		family:     f,
+		clientType: clientType,
 
 		// By default, gather only WireGuard interfaces using rtnetlink.
 		interfaces: rtnlInterfaces,
@@ -94,7 +96,7 @@ func (c *Client) Devices() ([]*wgtypes.Device, error) {
 	//
 	// The remainder of this function assumes that any returned device from this
 	// function is a valid WireGuard device.
-	ifis, err := c.interfaces()
+	ifis, err := c.interfaces(c.clientType)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +195,7 @@ func (c *Client) execute(command uint8, flags netlink.HeaderFlags, attrb []byte)
 }
 
 // rtnlInterfaces uses rtnetlink to fetch a list of WireGuard interfaces.
-func rtnlInterfaces() ([]string, error) {
+func rtnlInterfaces(clientType wgtypes.ClientType) ([]string, error) {
 	// Use the stdlib's rtnetlink helpers to get ahold of a table of all
 	// interfaces, so we can begin filtering it down to just WireGuard devices.
 	tab, err := syscall.NetlinkRIB(unix.RTM_GETLINK, unix.AF_UNSPEC)
@@ -206,12 +208,12 @@ func rtnlInterfaces() ([]string, error) {
 		return nil, fmt.Errorf("wglinux: failed to parse rtnetlink messages: %v", err)
 	}
 
-	return parseRTNLInterfaces(msgs)
+	return parseRTNLInterfaces(msgs, clientType)
 }
 
 // parseRTNLInterfaces unpacks rtnetlink messages and returns WireGuard
 // interface names.
-func parseRTNLInterfaces(msgs []syscall.NetlinkMessage) ([]string, error) {
+func parseRTNLInterfaces(msgs []syscall.NetlinkMessage, clientType wgtypes.ClientType) ([]string, error) {
 	var ifis []string
 	for _, m := range msgs {
 		// Only deal with link messages, and they must have an ifinfomsg
@@ -240,7 +242,7 @@ func parseRTNLInterfaces(msgs []syscall.NetlinkMessage) ([]string, error) {
 			case unix.IFLA_IFNAME:
 				ifi = ad.String()
 			case unix.IFLA_LINKINFO:
-				ad.Do(isWGKind(&isWG))
+				ad.Do(isWGKind(&isWG, clientType))
 			}
 		}
 
@@ -263,7 +265,16 @@ const amneziaWgKind = "amneziawg"
 
 // isWGKind parses netlink attributes to determine if a link is a WireGuard
 // device, then populates ok with the result.
-func isWGKind(ok *bool) func(b []byte) error {
+func isWGKind(ok *bool, clientType wgtypes.ClientType) func(b []byte) error {
+
+	var kind string
+	switch clientType {
+	case wgtypes.AmneziaClient:
+		kind = amneziaWgKind
+	default:
+		kind = wgKind
+	}
+
 	return func(b []byte) error {
 		ad, err := netlink.NewAttributeDecoder(b)
 		if err != nil {
@@ -276,7 +287,7 @@ func isWGKind(ok *bool) func(b []byte) error {
 			}
 
 			adStr := ad.String()
-			if adStr == wgKind || adStr == amneziaWgKind {
+			if adStr == kind {
 				*ok = true
 				return nil
 			}
