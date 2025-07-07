@@ -96,6 +96,9 @@ func (dp *deviceParser) Device() (*wgtypes.Device, error) {
 
 // Parse parses a single key/value pair into fields of a Device.
 func (dp *deviceParser) Parse(key, value string) {
+	advancedSecurity := wgtypes.AdvancedSecurity{}
+	hasAdvancedSecurity := false
+
 	switch key {
 	case "errno":
 		// 0 indicates success, anything else returns an error number that matches
@@ -133,23 +136,36 @@ func (dp *deviceParser) Parse(key, value string) {
 	case "fwmark":
 		dp.d.FirewallMark = dp.parseInt(value)
 	case "jc":
-		dp.d.AdvancedSecurity.JunkPacketCount = uint16(dp.parseInt(value))
+		hasAdvancedSecurity = true
+		advancedSecurity.JunkPacketCount = uint16(dp.parseInt(value))
 	case "jmin":
-		dp.d.AdvancedSecurity.JunkPacketMinSize = uint16(dp.parseInt(value))
+		hasAdvancedSecurity = true
+		advancedSecurity.JunkPacketMinSize = uint16(dp.parseInt(value))
 	case "jmax":
-		dp.d.AdvancedSecurity.JunkPacketMaxSize = uint16(dp.parseInt(value))
+		hasAdvancedSecurity = true
+		advancedSecurity.JunkPacketMaxSize = uint16(dp.parseInt(value))
 	case "s1":
-		dp.d.AdvancedSecurity.InitPacketJunkSize = uint16(dp.parseInt(value))
+		hasAdvancedSecurity = true
+		advancedSecurity.InitPacketJunkSize = uint16(dp.parseInt(value))
 	case "s2":
-		dp.d.AdvancedSecurity.ResponsePacketJunkSize = uint16(dp.parseInt(value))
+		hasAdvancedSecurity = true
+		advancedSecurity.ResponsePacketJunkSize = uint16(dp.parseInt(value))
 	case "h1":
-		dp.d.AdvancedSecurity.InitPacketMagicHeader = uint32(dp.parseInt(value))
+		hasAdvancedSecurity = true
+		advancedSecurity.InitPacketMagicHeader = uint32(dp.parseInt(value))
 	case "h2":
-		dp.d.AdvancedSecurity.ResponsePacketMagicHeader = uint32(dp.parseInt(value))
+		hasAdvancedSecurity = true
+		advancedSecurity.ResponsePacketMagicHeader = uint32(dp.parseInt(value))
 	case "h3":
-		dp.d.AdvancedSecurity.UnderloadPacketMagicHeader = uint32(dp.parseInt(value))
+		hasAdvancedSecurity = true
+		advancedSecurity.UnderloadPacketMagicHeader = uint32(dp.parseInt(value))
 	case "h4":
-		dp.d.AdvancedSecurity.TransportPacketMagicHeader = uint32(dp.parseInt(value))
+		hasAdvancedSecurity = true
+		advancedSecurity.TransportPacketMagicHeader = uint32(dp.parseInt(value))
+	}
+
+	if hasAdvancedSecurity {
+		dp.d.AdvancedSecurity = &advancedSecurity
 	}
 }
 

@@ -59,17 +59,6 @@ func printDevice(d *wgtypes.Device) {
   listening port: %d
 
 `
-	const advancedSecF = `  JC: %d
-  JMin: %d
-  JMax: %d
-  S1: %d
-  S2: %d
-  H1: %d
-  H2: %d
-  H3: %d
-  H4: %d
-
-`
 
 	fmt.Printf(
 		f,
@@ -78,19 +67,29 @@ func printDevice(d *wgtypes.Device) {
 		d.PublicKey.String(),
 		d.ListenPort)
 
-	if d.AdvancedSecurity.IsEnabled() {
-		fmt.Printf(
-			advancedSecF,
-			d.AdvancedSecurity.JunkPacketCount,
-			d.AdvancedSecurity.JunkPacketMinSize,
-			d.AdvancedSecurity.JunkPacketMaxSize,
-			d.AdvancedSecurity.InitPacketJunkSize,
-			d.AdvancedSecurity.ResponsePacketJunkSize,
-			d.AdvancedSecurity.InitPacketMagicHeader,
-			d.AdvancedSecurity.ResponsePacketMagicHeader,
-			d.AdvancedSecurity.UnderloadPacketMagicHeader,
-			d.AdvancedSecurity.TransportPacketMagicHeader,
-		)
+	if d.HasAdvancedSecurity() {
+		advSec := d.AdvancedSecurity
+
+		if advSec.JunkPacketCount != 0 {
+			fmt.Printf("  jc: %d\n", advSec.JunkPacketCount)
+		}
+		if advSec.JunkPacketMinSize != 0 {
+			fmt.Printf("  jmin: %d\n", advSec.JunkPacketMinSize)
+		}
+		if advSec.JunkPacketMaxSize != 0 {
+			fmt.Printf("  jmax: %d\n", advSec.JunkPacketMaxSize)
+		}
+		if advSec.InitPacketJunkSize != 0 {
+			fmt.Printf("  s1: %d\n", advSec.InitPacketJunkSize)
+		}
+		if advSec.ResponsePacketJunkSize != 0 {
+			fmt.Printf("  s2: %d\n", advSec.ResponsePacketJunkSize)
+		}
+		fmt.Printf("  h1: %d\n", advSec.InitPacketMagicHeader)
+		fmt.Printf("  h2: %d\n", advSec.ResponsePacketMagicHeader)
+		fmt.Printf("  h3: %d\n", advSec.UnderloadPacketMagicHeader)
+		fmt.Printf("  h4: %d\n", advSec.TransportPacketMagicHeader)
+		fmt.Println()
 	}
 }
 

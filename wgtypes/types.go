@@ -69,21 +69,6 @@ type AdvancedSecurity struct {
 	TransportPacketMagicHeader uint32
 }
 
-func (a AdvancedSecurity) IsEnabled() bool {
-	ret := false
-	ret = ret || a.JunkPacketCount != 0
-	ret = ret || a.JunkPacketMinSize != 0
-	ret = ret || a.JunkPacketMaxSize != 0
-	ret = ret || a.InitPacketJunkSize != 0
-	ret = ret || a.ResponsePacketJunkSize != 0
-	ret = ret || a.InitPacketMagicHeader != 0
-	ret = ret || a.ResponsePacketMagicHeader != 0
-	ret = ret || a.UnderloadPacketMagicHeader != 0
-	ret = ret || a.TransportPacketMagicHeader != 0
-
-	return ret
-}
-
 // A Device is a WireGuard device.
 type Device struct {
 	// Name is the name of the device.
@@ -107,10 +92,14 @@ type Device struct {
 	// take action on outgoing WireGuard packets.
 	FirewallMark int
 
-	AdvancedSecurity AdvancedSecurity
+	AdvancedSecurity *AdvancedSecurity
 
 	// Peers is the list of network peers associated with this device.
 	Peers []Peer
+}
+
+func (d Device) HasAdvancedSecurity() bool {
+	return d.AdvancedSecurity != nil
 }
 
 // KeyLen is the expected key length for a WireGuard key.
