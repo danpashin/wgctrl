@@ -71,21 +71,35 @@ func configAttrs(name string, cfg wgtypes.Config) ([]byte, error) {
 		ae.Uint16(wginternal.WGDEVICE_A_S2, *advancedSecCfg.ResponsePacketJunkSize)
 	}
 
-	if advancedSecCfg.InitPacketMagicHeader != nil {
-		ae.Uint32(wginternal.WGDEVICE_A_H1, *advancedSecCfg.InitPacketMagicHeader)
+	if advancedSecCfg.CookieReplyPacketJunkSize != nil {
+		ae.Uint16(wginternal.WGDEVICE_A_S3, *advancedSecCfg.CookieReplyPacketJunkSize)
 	}
 
-	if advancedSecCfg.ResponsePacketMagicHeader != nil {
-		ae.Uint32(wginternal.WGDEVICE_A_H2, *advancedSecCfg.ResponsePacketMagicHeader)
+	if advancedSecCfg.TransportPacketJunkSize != nil {
+		ae.Uint16(wginternal.WGDEVICE_A_S4, *advancedSecCfg.TransportPacketJunkSize)
 	}
 
-	if advancedSecCfg.UnderloadPacketMagicHeader != nil {
-		ae.Uint32(wginternal.WGDEVICE_A_H3, *advancedSecCfg.UnderloadPacketMagicHeader)
+	// Empty values are not allowed, see
+	// https://github.com/amnezia-vpn/amneziawg-tools/blob/5c6ffd6168f7c69199200a91803fa02e1b8c4152/src/config.c#L420
+	setAwgString := func(typ uint16, val *string) {
+		if val != nil {
+			length := len(*val)
+			if length > 0 && length < wginternal.MAX_AWG_STRING_LEN {
+				ae.String(typ, *val)
+			}
+		}
 	}
 
-	if advancedSecCfg.TransportPacketMagicHeader != nil {
-		ae.Uint32(wginternal.WGDEVICE_A_H4, *advancedSecCfg.TransportPacketMagicHeader)
-	}
+	setAwgString(wginternal.WGDEVICE_A_H1, advancedSecCfg.InitPacketMagicHeader)
+	setAwgString(wginternal.WGDEVICE_A_H2, advancedSecCfg.ResponsePacketMagicHeader)
+	setAwgString(wginternal.WGDEVICE_A_H3, advancedSecCfg.UnderloadPacketMagicHeader)
+	setAwgString(wginternal.WGDEVICE_A_H4, advancedSecCfg.TransportPacketMagicHeader)
+
+	setAwgString(wginternal.WGDEVICE_A_I1, advancedSecCfg.FirstSpecialJunkPacket)
+	setAwgString(wginternal.WGDEVICE_A_I2, advancedSecCfg.SecondSpecialJunkPacket)
+	setAwgString(wginternal.WGDEVICE_A_I3, advancedSecCfg.ThirdSpecialJunkPacket)
+	setAwgString(wginternal.WGDEVICE_A_I4, advancedSecCfg.FourthSpecialJunkPacket)
+	setAwgString(wginternal.WGDEVICE_A_I5, advancedSecCfg.FifthSpecialJunkPacket)
 
 	return ae.Encode()
 }

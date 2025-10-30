@@ -62,6 +62,15 @@ func parseDeviceLoop(m genetlink.Message) (*wgtypes.Device, error) {
 
 	d := wgtypes.Device{Type: wgtypes.LinuxKernel}
 	for ad.Next() {
+		parseAwgString := func() *string {
+			value := ad.String()
+			if len(value) == 0 {
+				return nil
+			}
+
+			return &value
+		}
+
 		switch ad.Type() {
 		case unix.WGDEVICE_A_IFINDEX:
 			// Ignored; interface index isn't exposed at all in the userspace
@@ -110,16 +119,37 @@ func parseDeviceLoop(m genetlink.Message) (*wgtypes.Device, error) {
 			advancedSec.ResponsePacketJunkSize = ad.Uint16()
 		case wginternal.WGDEVICE_A_H1:
 			hasAdvancedSec = true
-			advancedSec.InitPacketMagicHeader = ad.Uint32()
+			advancedSec.InitPacketMagicHeader = ad.String()
 		case wginternal.WGDEVICE_A_H2:
 			hasAdvancedSec = true
-			advancedSec.ResponsePacketMagicHeader = ad.Uint32()
+			advancedSec.ResponsePacketMagicHeader = ad.String()
 		case wginternal.WGDEVICE_A_H3:
 			hasAdvancedSec = true
-			advancedSec.UnderloadPacketMagicHeader = ad.Uint32()
+			advancedSec.UnderloadPacketMagicHeader = ad.String()
 		case wginternal.WGDEVICE_A_H4:
 			hasAdvancedSec = true
-			advancedSec.TransportPacketMagicHeader = ad.Uint32()
+			advancedSec.TransportPacketMagicHeader = ad.String()
+		case wginternal.WGDEVICE_A_S3:
+			hasAdvancedSec = true
+			advancedSec.CookieReplyPacketJunkSize = ad.Uint16()
+		case wginternal.WGDEVICE_A_S4:
+			hasAdvancedSec = true
+			advancedSec.TransportPacketJunkSize = ad.Uint16()
+		case wginternal.WGDEVICE_A_I1:
+			hasAdvancedSec = true
+			advancedSec.FirstSpecialJunkPacket = parseAwgString()
+		case wginternal.WGDEVICE_A_I2:
+			hasAdvancedSec = true
+			advancedSec.SecondSpecialJunkPacket = parseAwgString()
+		case wginternal.WGDEVICE_A_I3:
+			hasAdvancedSec = true
+			advancedSec.ThirdSpecialJunkPacket = parseAwgString()
+		case wginternal.WGDEVICE_A_I4:
+			hasAdvancedSec = true
+			advancedSec.FourthSpecialJunkPacket = parseAwgString()
+		case wginternal.WGDEVICE_A_I5:
+			hasAdvancedSec = true
+			advancedSec.FifthSpecialJunkPacket = parseAwgString()
 		}
 	}
 

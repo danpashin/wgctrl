@@ -99,6 +99,15 @@ func (dp *deviceParser) Parse(key, value string) {
 	advancedSecurity := wgtypes.AdvancedSecurity{}
 	hasAdvancedSecurity := false
 
+	parseAwgString := func(val string) *string {
+		if len(val) == 0 {
+			return nil
+		}
+
+		hasAdvancedSecurity = true
+		return &val
+	}
+
 	switch key {
 	case "errno":
 		// 0 indicates success, anything else returns an error number that matches
@@ -150,18 +159,34 @@ func (dp *deviceParser) Parse(key, value string) {
 	case "s2":
 		hasAdvancedSecurity = true
 		advancedSecurity.ResponsePacketJunkSize = uint16(dp.parseInt(value))
+	case "s3":
+		hasAdvancedSecurity = true
+		advancedSecurity.CookieReplyPacketJunkSize = uint16(dp.parseInt(value))
+	case "s4":
+		hasAdvancedSecurity = true
+		advancedSecurity.TransportPacketJunkSize = uint16(dp.parseInt(value))
 	case "h1":
 		hasAdvancedSecurity = true
-		advancedSecurity.InitPacketMagicHeader = uint32(dp.parseInt(value))
+		advancedSecurity.InitPacketMagicHeader = value
 	case "h2":
 		hasAdvancedSecurity = true
-		advancedSecurity.ResponsePacketMagicHeader = uint32(dp.parseInt(value))
+		advancedSecurity.ResponsePacketMagicHeader = value
 	case "h3":
 		hasAdvancedSecurity = true
-		advancedSecurity.UnderloadPacketMagicHeader = uint32(dp.parseInt(value))
+		advancedSecurity.UnderloadPacketMagicHeader = value
 	case "h4":
 		hasAdvancedSecurity = true
-		advancedSecurity.TransportPacketMagicHeader = uint32(dp.parseInt(value))
+		advancedSecurity.TransportPacketMagicHeader = value
+	case "i1":
+		advancedSecurity.FirstSpecialJunkPacket = parseAwgString(value)
+	case "i2":
+		advancedSecurity.SecondSpecialJunkPacket = parseAwgString(value)
+	case "i3":
+		advancedSecurity.ThirdSpecialJunkPacket = parseAwgString(value)
+	case "i4":
+		advancedSecurity.FourthSpecialJunkPacket = parseAwgString(value)
+	case "i5":
+		advancedSecurity.FifthSpecialJunkPacket = parseAwgString(value)
 	}
 
 	if hasAdvancedSecurity {

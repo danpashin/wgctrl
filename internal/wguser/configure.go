@@ -120,20 +120,48 @@ func writeConfig(w io.Writer, cfg wgtypes.Config) {
 		fmt.Fprintf(w, "s2=%d\n", *advancedSecCfg.ResponsePacketJunkSize)
 	}
 
+	if advancedSecCfg.CookieReplyPacketJunkSize != nil {
+		fmt.Fprintf(w, "s3=%d\n", *advancedSecCfg.CookieReplyPacketJunkSize)
+	}
+
+	if advancedSecCfg.TransportPacketJunkSize != nil {
+		fmt.Fprintf(w, "s4=%d\n", *advancedSecCfg.TransportPacketJunkSize)
+	}
+
 	if advancedSecCfg.InitPacketMagicHeader != nil {
-		fmt.Fprintf(w, "h1=%d\n", *advancedSecCfg.InitPacketMagicHeader)
+		fmt.Fprintf(w, "h1=%s\n", *advancedSecCfg.InitPacketMagicHeader)
 	}
 
 	if advancedSecCfg.ResponsePacketMagicHeader != nil {
-		fmt.Fprintf(w, "h2=%d\n", *advancedSecCfg.ResponsePacketMagicHeader)
+		fmt.Fprintf(w, "h2=%s\n", *advancedSecCfg.ResponsePacketMagicHeader)
 	}
 
 	if advancedSecCfg.UnderloadPacketMagicHeader != nil {
-		fmt.Fprintf(w, "h3=%d\n", *advancedSecCfg.UnderloadPacketMagicHeader)
+		fmt.Fprintf(w, "h3=%s\n", *advancedSecCfg.UnderloadPacketMagicHeader)
 	}
 
 	if advancedSecCfg.TransportPacketMagicHeader != nil {
-		fmt.Fprintf(w, "h4=%d\n", *advancedSecCfg.TransportPacketMagicHeader)
+		fmt.Fprintf(w, "h4=%s\n", *advancedSecCfg.TransportPacketMagicHeader)
+	}
+
+	if advancedSecCfg.FirstSpecialJunkPacket != nil {
+		fmt.Fprintf(w, "i1=%s\n", *advancedSecCfg.FirstSpecialJunkPacket)
+	}
+
+	if advancedSecCfg.SecondSpecialJunkPacket != nil {
+		fmt.Fprintf(w, "i2=%s\n", *advancedSecCfg.SecondSpecialJunkPacket)
+	}
+
+	if advancedSecCfg.ThirdSpecialJunkPacket != nil {
+		fmt.Fprintf(w, "i3=%s\n", *advancedSecCfg.ThirdSpecialJunkPacket)
+	}
+
+	if advancedSecCfg.FourthSpecialJunkPacket != nil {
+		fmt.Fprintf(w, "i4=%s\n", *advancedSecCfg.FourthSpecialJunkPacket)
+	}
+
+	if advancedSecCfg.FifthSpecialJunkPacket != nil {
+		fmt.Fprintf(w, "i5=%s\n", *advancedSecCfg.FifthSpecialJunkPacket)
 	}
 }
 

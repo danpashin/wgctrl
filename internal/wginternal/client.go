@@ -22,7 +22,16 @@ const (
 	WGDEVICE_A_H2   = 0xF
 	WGDEVICE_A_H3   = 0x10
 	WGDEVICE_A_H4   = 0x11
+	WGDEVICE_A_S3   = 0x13
+	WGDEVICE_A_S4   = 0x14
+	WGDEVICE_A_I1   = 0x15
+	WGDEVICE_A_I2   = 0x16
+	WGDEVICE_A_I3   = 0x17
+	WGDEVICE_A_I4   = 0x18
+	WGDEVICE_A_I5   = 0x19
 )
+
+const MAX_AWG_STRING_LEN = 5 * 1024
 
 // A Client is a type which can control a WireGuard device.
 type Client interface {

@@ -17,7 +17,7 @@ func main() {
 	flag.Parse()
 
 	clientTypes := [](wgtypes.ClientType){
-		wgtypes.NativeClient, wgtypes.AmneziaClient,
+		wgtypes.AmneziaClient,
 	}
 
 	for _, clientType := range clientTypes {
@@ -85,10 +85,31 @@ func printDevice(d *wgtypes.Device) {
 		if advSec.ResponsePacketJunkSize != 0 {
 			fmt.Printf("  s2: %d\n", advSec.ResponsePacketJunkSize)
 		}
-		fmt.Printf("  h1: %d\n", advSec.InitPacketMagicHeader)
-		fmt.Printf("  h2: %d\n", advSec.ResponsePacketMagicHeader)
-		fmt.Printf("  h3: %d\n", advSec.UnderloadPacketMagicHeader)
-		fmt.Printf("  h4: %d\n", advSec.TransportPacketMagicHeader)
+		if advSec.CookieReplyPacketJunkSize != 0 {
+			fmt.Printf("  s3: %d\n", advSec.CookieReplyPacketJunkSize)
+		}
+		if advSec.TransportPacketJunkSize != 0 {
+			fmt.Printf("  s4: %d\n", advSec.TransportPacketJunkSize)
+		}
+		fmt.Printf("  h1: %s\n", advSec.InitPacketMagicHeader)
+		fmt.Printf("  h2: %s\n", advSec.ResponsePacketMagicHeader)
+		fmt.Printf("  h3: %s\n", advSec.UnderloadPacketMagicHeader)
+		fmt.Printf("  h4: %s\n", advSec.TransportPacketMagicHeader)
+		if advSec.FirstSpecialJunkPacket != nil {
+			fmt.Printf("  i1: %s\n", *advSec.FirstSpecialJunkPacket)
+		}
+		if advSec.SecondSpecialJunkPacket != nil {
+			fmt.Printf("  i2: %s\n", *advSec.SecondSpecialJunkPacket)
+		}
+		if advSec.ThirdSpecialJunkPacket != nil {
+			fmt.Printf("  i3: %s\n", *advSec.ThirdSpecialJunkPacket)
+		}
+		if advSec.FourthSpecialJunkPacket != nil {
+			fmt.Printf("  i4: %s\n", *advSec.FourthSpecialJunkPacket)
+		}
+		if advSec.FifthSpecialJunkPacket != nil {
+			fmt.Printf("  i5: %s\n", *advSec.FifthSpecialJunkPacket)
+		}
 		fmt.Println()
 	}
 }

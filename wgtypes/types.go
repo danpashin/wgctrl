@@ -55,18 +55,35 @@ type AdvancedSecurity struct {
 	JunkPacketMinSize uint16
 	//JMax
 	JunkPacketMaxSize uint16
+
 	// S1
 	InitPacketJunkSize uint16
 	// S2
 	ResponsePacketJunkSize uint16
+	// S3
+	CookieReplyPacketJunkSize uint16
+	// S4
+	TransportPacketJunkSize uint16
+
 	// H1
-	InitPacketMagicHeader uint32
+	InitPacketMagicHeader string
 	// H2
-	ResponsePacketMagicHeader uint32
+	ResponsePacketMagicHeader string
 	// H3
-	UnderloadPacketMagicHeader uint32
+	UnderloadPacketMagicHeader string
 	// H4
-	TransportPacketMagicHeader uint32
+	TransportPacketMagicHeader string
+
+	// I1
+	FirstSpecialJunkPacket *string
+	// I2
+	SecondSpecialJunkPacket *string
+	// I3
+	ThirdSpecialJunkPacket *string
+	// I4
+	FourthSpecialJunkPacket *string
+	// I5
+	FifthSpecialJunkPacket *string
 }
 
 // A Device is a WireGuard device.
@@ -239,15 +256,25 @@ type Peer struct {
 }
 
 type AdvancedSecurityConfig struct {
-	JunkPacketCount            *uint16
-	JunkPacketMinSize          *uint16
-	JunkPacketMaxSize          *uint16
-	InitPacketJunkSize         *uint16
-	ResponsePacketJunkSize     *uint16
-	InitPacketMagicHeader      *uint32
-	ResponsePacketMagicHeader  *uint32
-	UnderloadPacketMagicHeader *uint32
-	TransportPacketMagicHeader *uint32
+	JunkPacketCount   *uint16
+	JunkPacketMinSize *uint16
+	JunkPacketMaxSize *uint16
+
+	InitPacketJunkSize        *uint16
+	ResponsePacketJunkSize    *uint16
+	CookieReplyPacketJunkSize *uint16
+	TransportPacketJunkSize   *uint16
+
+	InitPacketMagicHeader      *string
+	ResponsePacketMagicHeader  *string
+	UnderloadPacketMagicHeader *string
+	TransportPacketMagicHeader *string
+
+	FirstSpecialJunkPacket  *string
+	SecondSpecialJunkPacket *string
+	ThirdSpecialJunkPacket  *string
+	FourthSpecialJunkPacket *string
+	FifthSpecialJunkPacket  *string
 }
 
 // A Config is a WireGuard device configuration.
