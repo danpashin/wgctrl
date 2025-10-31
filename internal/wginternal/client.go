@@ -31,6 +31,14 @@ const (
 	WGDEVICE_A_I5   = 0x19
 )
 
+const (
+	WGPEER_F_HAS_ADVANCED_SECURITY = 0x8
+)
+
+const (
+	WGPEER_A_ADVANCED_SECURITY = 0xB
+)
+
 const MAX_AWG_STRING_LEN = 5 * 1024
 
 // A Client is a type which can control a WireGuard device.

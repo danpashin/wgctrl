@@ -253,6 +253,10 @@ type Peer struct {
 	//
 	// A value of 0 indicates that the most recent protocol version will be used.
 	ProtocolVersion int
+
+	// AdvancedSecurity is a flag indicating that advanced security
+	// techniques provided by AmneziaWG should be used.
+	AdvancedSecurity bool
 }
 
 type AdvancedSecurityConfig struct {
@@ -348,4 +352,8 @@ type PeerConfig struct {
 	// AllowedIPs specifies a list of allowed IP addresses in CIDR notation
 	// for this peer.
 	AllowedIPs []net.IPNet
+
+	// AdvancedSecurity is a flag indicating that advanced security
+	// techniques provided by AmneziaWG should be used.
+	AdvancedSecurity *bool
 }

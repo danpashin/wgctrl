@@ -120,6 +120,7 @@ func printPeer(p wgtypes.Peer) {
   allowed ips: %s
   latest handshake: %s
   transfer: %d B received, %d B sent
+  advanced security: %t
 
 `
 
@@ -132,6 +133,7 @@ func printPeer(p wgtypes.Peer) {
 		p.LastHandshakeTime.String(),
 		p.ReceiveBytes,
 		p.TransmitBytes,
+		p.AdvancedSecurity,
 	)
 }
 

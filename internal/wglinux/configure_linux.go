@@ -237,6 +237,10 @@ func encodePeer(p wgtypes.PeerConfig) func(ae *netlink.AttributeEncoder) error {
 		if p.UpdateOnly {
 			flags |= unix.WGPEER_F_UPDATE_ONLY
 		}
+		if p.AdvancedSecurity != nil {
+			flags |= wginternal.WGPEER_F_HAS_ADVANCED_SECURITY
+			ae.Flag(wginternal.WGPEER_A_ADVANCED_SECURITY, *p.AdvancedSecurity)
+		}
 		if flags != 0 {
 			ae.Uint32(unix.WGPEER_A_FLAGS, flags)
 		}

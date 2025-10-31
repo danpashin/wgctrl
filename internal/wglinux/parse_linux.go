@@ -188,6 +188,8 @@ func parsePeer(ad *netlink.AttributeDecoder) wgtypes.Peer {
 			ad.Nested(parseAllowedIPs(&p.AllowedIPs))
 		case unix.WGPEER_A_PROTOCOL_VERSION:
 			p.ProtocolVersion = int(ad.Uint32())
+		case wginternal.WGPEER_A_ADVANCED_SECURITY:
+			p.AdvancedSecurity = ad.Flag()
 		}
 	}
 
