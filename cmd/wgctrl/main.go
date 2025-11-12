@@ -95,20 +95,32 @@ func printDevice(d *wgtypes.Device) {
 		fmt.Printf("  h2: %s\n", advSec.ResponsePacketMagicHeader)
 		fmt.Printf("  h3: %s\n", advSec.UnderloadPacketMagicHeader)
 		fmt.Printf("  h4: %s\n", advSec.TransportPacketMagicHeader)
-		if advSec.FirstSpecialJunkPacket != nil {
-			fmt.Printf("  i1: %s\n", *advSec.FirstSpecialJunkPacket)
+		if advSec.SpecialJunkPacket1 != nil {
+			fmt.Printf("  i1: %s\n", *advSec.SpecialJunkPacket1)
 		}
-		if advSec.SecondSpecialJunkPacket != nil {
-			fmt.Printf("  i2: %s\n", *advSec.SecondSpecialJunkPacket)
+		if advSec.SpecialJunkPacket2 != nil {
+			fmt.Printf("  i2: %s\n", *advSec.SpecialJunkPacket2)
 		}
-		if advSec.ThirdSpecialJunkPacket != nil {
-			fmt.Printf("  i3: %s\n", *advSec.ThirdSpecialJunkPacket)
+		if advSec.SpecialJunkPacket3 != nil {
+			fmt.Printf("  i3: %s\n", *advSec.SpecialJunkPacket3)
 		}
-		if advSec.FourthSpecialJunkPacket != nil {
-			fmt.Printf("  i4: %s\n", *advSec.FourthSpecialJunkPacket)
+		if advSec.SpecialJunkPacket4 != nil {
+			fmt.Printf("  i4: %s\n", *advSec.SpecialJunkPacket4)
 		}
-		if advSec.FifthSpecialJunkPacket != nil {
-			fmt.Printf("  i5: %s\n", *advSec.FifthSpecialJunkPacket)
+		if advSec.SpecialJunkPacket5 != nil {
+			fmt.Printf("  i5: %s\n", *advSec.SpecialJunkPacket5)
+		}
+		if advSec.ControlledJunkPacket1 != nil {
+			fmt.Printf("  j1: %s\n", *advSec.ControlledJunkPacket1)
+		}
+		if advSec.ControlledJunkPacket2 != nil {
+			fmt.Printf("  j2: %s\n", *advSec.ControlledJunkPacket2)
+		}
+		if advSec.ControlledJunkPacket3 != nil {
+			fmt.Printf("  j3: %s\n", *advSec.ControlledJunkPacket3)
+		}
+		if advSec.SpecialHandshakeTimeout != nil {
+			fmt.Printf("  itime: %s\n", advSec.SpecialHandshakeTimeout)
 		}
 		fmt.Println()
 	}

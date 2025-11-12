@@ -95,11 +95,16 @@ func configAttrs(name string, cfg wgtypes.Config) ([]byte, error) {
 	setAwgString(wginternal.WGDEVICE_A_H3, advancedSecCfg.UnderloadPacketMagicHeader)
 	setAwgString(wginternal.WGDEVICE_A_H4, advancedSecCfg.TransportPacketMagicHeader)
 
-	setAwgString(wginternal.WGDEVICE_A_I1, advancedSecCfg.FirstSpecialJunkPacket)
-	setAwgString(wginternal.WGDEVICE_A_I2, advancedSecCfg.SecondSpecialJunkPacket)
-	setAwgString(wginternal.WGDEVICE_A_I3, advancedSecCfg.ThirdSpecialJunkPacket)
-	setAwgString(wginternal.WGDEVICE_A_I4, advancedSecCfg.FourthSpecialJunkPacket)
-	setAwgString(wginternal.WGDEVICE_A_I5, advancedSecCfg.FifthSpecialJunkPacket)
+	setAwgString(wginternal.WGDEVICE_A_I1, advancedSecCfg.SpecialJunkPacket1)
+	setAwgString(wginternal.WGDEVICE_A_I2, advancedSecCfg.SpecialJunkPacket2)
+	setAwgString(wginternal.WGDEVICE_A_I3, advancedSecCfg.SpecialJunkPacket3)
+	setAwgString(wginternal.WGDEVICE_A_I4, advancedSecCfg.SpecialJunkPacket4)
+	setAwgString(wginternal.WGDEVICE_A_I5, advancedSecCfg.SpecialJunkPacket5)
+
+	setAwgString(wginternal.WGDEVICE_A_DI, advancedSecCfg.ControlledJunkPacket1)
+	setAwgString(wginternal.WGDEVICE_A_DR, advancedSecCfg.ControlledJunkPacket2)
+	setAwgString(wginternal.WGDEVICE_A_DC, advancedSecCfg.ControlledJunkPacket3)
+	setAwgString(wginternal.WGDEVICE_A_DC, advancedSecCfg.SpecialHandshakeTimeout)
 
 	return ae.Encode()
 }

@@ -29,6 +29,10 @@ const (
 	WGDEVICE_A_I3   = 0x17
 	WGDEVICE_A_I4   = 0x18
 	WGDEVICE_A_I5   = 0x19
+	WGDEVICE_A_DI   = 0x1A
+	WGDEVICE_A_DR   = 0x1B
+	WGDEVICE_A_DC   = 0x1C
+	WGDEVICE_A_DT   = 0x1D
 )
 
 const (

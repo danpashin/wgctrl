@@ -144,24 +144,40 @@ func writeConfig(w io.Writer, cfg wgtypes.Config) {
 		fmt.Fprintf(w, "h4=%s\n", *advancedSecCfg.TransportPacketMagicHeader)
 	}
 
-	if advancedSecCfg.FirstSpecialJunkPacket != nil {
-		fmt.Fprintf(w, "i1=%s\n", *advancedSecCfg.FirstSpecialJunkPacket)
+	if advancedSecCfg.SpecialJunkPacket1 != nil {
+		fmt.Fprintf(w, "i1=%s\n", *advancedSecCfg.SpecialJunkPacket1)
 	}
 
-	if advancedSecCfg.SecondSpecialJunkPacket != nil {
-		fmt.Fprintf(w, "i2=%s\n", *advancedSecCfg.SecondSpecialJunkPacket)
+	if advancedSecCfg.SpecialJunkPacket2 != nil {
+		fmt.Fprintf(w, "i2=%s\n", *advancedSecCfg.SpecialJunkPacket2)
 	}
 
-	if advancedSecCfg.ThirdSpecialJunkPacket != nil {
-		fmt.Fprintf(w, "i3=%s\n", *advancedSecCfg.ThirdSpecialJunkPacket)
+	if advancedSecCfg.SpecialJunkPacket3 != nil {
+		fmt.Fprintf(w, "i3=%s\n", *advancedSecCfg.SpecialJunkPacket3)
 	}
 
-	if advancedSecCfg.FourthSpecialJunkPacket != nil {
-		fmt.Fprintf(w, "i4=%s\n", *advancedSecCfg.FourthSpecialJunkPacket)
+	if advancedSecCfg.SpecialJunkPacket4 != nil {
+		fmt.Fprintf(w, "i4=%s\n", *advancedSecCfg.SpecialJunkPacket4)
 	}
 
-	if advancedSecCfg.FifthSpecialJunkPacket != nil {
-		fmt.Fprintf(w, "i5=%s\n", *advancedSecCfg.FifthSpecialJunkPacket)
+	if advancedSecCfg.SpecialJunkPacket5 != nil {
+		fmt.Fprintf(w, "i5=%s\n", *advancedSecCfg.SpecialJunkPacket5)
+	}
+
+	if advancedSecCfg.ControlledJunkPacket1 != nil {
+		fmt.Fprintf(w, "di=%s\n", *advancedSecCfg.ControlledJunkPacket1)
+	}
+
+	if advancedSecCfg.ControlledJunkPacket2 != nil {
+		fmt.Fprintf(w, "dr=%s\n", *advancedSecCfg.ControlledJunkPacket2)
+	}
+
+	if advancedSecCfg.ControlledJunkPacket3 != nil {
+		fmt.Fprintf(w, "dc=%s\n", *advancedSecCfg.ControlledJunkPacket3)
+	}
+
+	if advancedSecCfg.SpecialJunkPacket4 != nil {
+		fmt.Fprintf(w, "dt=%s\n", *advancedSecCfg.SpecialHandshakeTimeout)
 	}
 }
 

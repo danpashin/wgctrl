@@ -178,15 +178,23 @@ func (dp *deviceParser) Parse(key, value string) {
 		hasAdvancedSecurity = true
 		advancedSecurity.TransportPacketMagicHeader = value
 	case "i1":
-		advancedSecurity.FirstSpecialJunkPacket = parseAwgString(value)
+		advancedSecurity.SpecialJunkPacket1 = parseAwgString(value)
 	case "i2":
-		advancedSecurity.SecondSpecialJunkPacket = parseAwgString(value)
+		advancedSecurity.SpecialJunkPacket2 = parseAwgString(value)
 	case "i3":
-		advancedSecurity.ThirdSpecialJunkPacket = parseAwgString(value)
+		advancedSecurity.SpecialJunkPacket3 = parseAwgString(value)
 	case "i4":
-		advancedSecurity.FourthSpecialJunkPacket = parseAwgString(value)
+		advancedSecurity.SpecialJunkPacket4 = parseAwgString(value)
 	case "i5":
-		advancedSecurity.FifthSpecialJunkPacket = parseAwgString(value)
+		advancedSecurity.SpecialJunkPacket5 = parseAwgString(value)
+	case "di":
+		advancedSecurity.ControlledJunkPacket1 = parseAwgString(value)
+	case "dr":
+		advancedSecurity.ControlledJunkPacket2 = parseAwgString(value)
+	case "dc":
+		advancedSecurity.ControlledJunkPacket3 = parseAwgString(value)
+	case "dt":
+		advancedSecurity.SpecialHandshakeTimeout = parseAwgString(value)
 	}
 
 	if hasAdvancedSecurity {

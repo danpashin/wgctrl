@@ -137,19 +137,31 @@ func parseDeviceLoop(m genetlink.Message) (*wgtypes.Device, error) {
 			advancedSec.TransportPacketJunkSize = ad.Uint16()
 		case wginternal.WGDEVICE_A_I1:
 			hasAdvancedSec = true
-			advancedSec.FirstSpecialJunkPacket = parseAwgString()
+			advancedSec.SpecialJunkPacket1 = parseAwgString()
 		case wginternal.WGDEVICE_A_I2:
 			hasAdvancedSec = true
-			advancedSec.SecondSpecialJunkPacket = parseAwgString()
+			advancedSec.SpecialJunkPacket2 = parseAwgString()
 		case wginternal.WGDEVICE_A_I3:
 			hasAdvancedSec = true
-			advancedSec.ThirdSpecialJunkPacket = parseAwgString()
+			advancedSec.SpecialJunkPacket3 = parseAwgString()
 		case wginternal.WGDEVICE_A_I4:
 			hasAdvancedSec = true
-			advancedSec.FourthSpecialJunkPacket = parseAwgString()
+			advancedSec.SpecialJunkPacket4 = parseAwgString()
 		case wginternal.WGDEVICE_A_I5:
 			hasAdvancedSec = true
-			advancedSec.FifthSpecialJunkPacket = parseAwgString()
+			advancedSec.SpecialJunkPacket5 = parseAwgString()
+		case wginternal.WGDEVICE_A_DI:
+			hasAdvancedSec = true
+			advancedSec.ControlledJunkPacket1 = parseAwgString()
+		case wginternal.WGDEVICE_A_DR:
+			hasAdvancedSec = true
+			advancedSec.ControlledJunkPacket2 = parseAwgString()
+		case wginternal.WGDEVICE_A_DC:
+			hasAdvancedSec = true
+			advancedSec.ControlledJunkPacket3 = parseAwgString()
+		case wginternal.WGDEVICE_A_DT:
+			hasAdvancedSec = true
+			advancedSec.SpecialHandshakeTimeout = parseAwgString()
 		}
 	}
 

@@ -49,41 +49,50 @@ func (dt DeviceType) String() string {
 }
 
 type AdvancedSecurity struct {
-	// JC
+	// Jc - Junk packet count
 	JunkPacketCount uint16
-	// JMin
+	// Jmin - Junk packet minimum size
 	JunkPacketMinSize uint16
-	//JMax
+	// Jmax - Junk packet maximum size
 	JunkPacketMaxSize uint16
 
-	// S1
+	// S1 - Init packet junk size
 	InitPacketJunkSize uint16
-	// S2
+	// S2 - Response packet junk size
 	ResponsePacketJunkSize uint16
-	// S3
+	// S3 - Cookie packet junk size
 	CookieReplyPacketJunkSize uint16
-	// S4
+	// S4 - Transport packet junk size
 	TransportPacketJunkSize uint16
 
-	// H1
+	// H1 - Init packet magic header
 	InitPacketMagicHeader string
-	// H2
+	// H2 - Response packet magic header
 	ResponsePacketMagicHeader string
-	// H3
+	// H3 - Underload packet magic header
 	UnderloadPacketMagicHeader string
-	// H4
+	// H4 - Transport packet magic header
 	TransportPacketMagicHeader string
 
-	// I1
-	FirstSpecialJunkPacket *string
-	// I2
-	SecondSpecialJunkPacket *string
-	// I3
-	ThirdSpecialJunkPacket *string
-	// I4
-	FourthSpecialJunkPacket *string
-	// I5
-	FifthSpecialJunkPacket *string
+	// I1 - First special junk packet
+	SpecialJunkPacket1 *string
+	// I2 - Second special junk packet
+	SpecialJunkPacket2 *string
+	// I3 - Third special junk packet
+	SpecialJunkPacket3 *string
+	// I4 - Fourth special junk packet
+	SpecialJunkPacket4 *string
+	// I5 - Fifth special junk packet
+	SpecialJunkPacket5 *string
+
+	// J1 (DI) - First controlled junk packet
+	ControlledJunkPacket1 *string
+	// J2 (DR) - Second controlled junk packet
+	ControlledJunkPacket2 *string
+	// J3 (DC) - Third controlled junk packet
+	ControlledJunkPacket3 *string
+	// Itime (DT) - Special handshake timeout
+	SpecialHandshakeTimeout *string
 }
 
 // A Device is a WireGuard device.
@@ -260,25 +269,50 @@ type Peer struct {
 }
 
 type AdvancedSecurityConfig struct {
-	JunkPacketCount   *uint16
+	// Jc - Junk packet count
+	JunkPacketCount *uint16
+	// Jmin - Junk packet minimum size
 	JunkPacketMinSize *uint16
+	// Jmax - Junk packet maximum size
 	JunkPacketMaxSize *uint16
 
-	InitPacketJunkSize        *uint16
-	ResponsePacketJunkSize    *uint16
+	// S1 - Init packet junk size
+	InitPacketJunkSize *uint16
+	// S2 - Response packet junk size
+	ResponsePacketJunkSize *uint16
+	// S3 - Cookie packet junk size
 	CookieReplyPacketJunkSize *uint16
-	TransportPacketJunkSize   *uint16
+	// S4 - Transport packet junk size
+	TransportPacketJunkSize *uint16
 
-	InitPacketMagicHeader      *string
-	ResponsePacketMagicHeader  *string
+	// H1 - Init packet magic header
+	InitPacketMagicHeader *string
+	// H2 - Response packet magic header
+	ResponsePacketMagicHeader *string
+	// H3 - Underload packet magic header
 	UnderloadPacketMagicHeader *string
+	// H4 - Transport packet magic headers
 	TransportPacketMagicHeader *string
 
-	FirstSpecialJunkPacket  *string
-	SecondSpecialJunkPacket *string
-	ThirdSpecialJunkPacket  *string
-	FourthSpecialJunkPacket *string
-	FifthSpecialJunkPacket  *string
+	// I1 - First special junk packet
+	SpecialJunkPacket1 *string
+	// I2 - Second special junk packet
+	SpecialJunkPacket2 *string
+	// I3 - Third special junk packet
+	SpecialJunkPacket3 *string
+	// I4 - Fourth special junk packet
+	SpecialJunkPacket4 *string
+	// I4 - Fourth special junk packet
+	SpecialJunkPacket5 *string
+
+	// J1 (DI) - First controlled junk packet
+	ControlledJunkPacket1 *string
+	// J2 (DR) - Second controlled junk packet
+	ControlledJunkPacket2 *string
+	// J3 (DC) - Third controlled junk packet
+	ControlledJunkPacket3 *string
+	// Itime (DT) - Special handshake timeout
+	SpecialHandshakeTimeout *string
 }
 
 // A Config is a WireGuard device configuration.
