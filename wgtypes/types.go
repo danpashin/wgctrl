@@ -48,6 +48,17 @@ func (dt DeviceType) String() string {
 	}
 }
 
+func (ct ClientType) String() string {
+	switch ct {
+	case NativeClient:
+		return "WireGuard"
+	case AmneziaClient:
+		return "AmneziaWG"
+	default:
+		return "unknown"
+	}
+}
+
 type AdvancedSecurity struct {
 	// JC
 	JunkPacketCount uint16
