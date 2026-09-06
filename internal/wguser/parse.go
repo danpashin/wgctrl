@@ -41,6 +41,8 @@ func (c *Client) getDevice(device string) (*wgtypes.Device, error) {
 	d.Name = deviceName(device)
 	d.Type = wgtypes.Userspace
 
+	println("total", d.AdvancedSecurity.TransportPacketMagicHeader)
+
 	return d, nil
 }
 
@@ -97,6 +99,9 @@ func (dp *deviceParser) Device() (*wgtypes.Device, error) {
 // Parse parses a single key/value pair into fields of a Device.
 func (dp *deviceParser) Parse(key, value string) {
 	advancedSecurity := wgtypes.AdvancedSecurity{}
+	if dp.d.AdvancedSecurity != nil {
+		advancedSecurity = *dp.d.AdvancedSecurity
+	}
 	hasAdvancedSecurity := false
 
 	parseAwgString := func(val string) *string {
