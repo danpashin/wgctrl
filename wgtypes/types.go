@@ -397,6 +397,13 @@ func (k CryptKey) HexString() string {
 	return hex.EncodeToString(k[:])
 }
 
+func (k CryptKey) String() string {
+	buf := make([]byte, base64.StdEncoding.EncodedLen(len(k)))
+	base64.StdEncoding.Encode(buf, k[:])
+
+	return string(buf)
+}
+
 func CryptKeyFromRaw(d []byte) *CryptKey {
 	buf := make([]byte, 32)
 	copy(buf, d)
@@ -405,11 +412,21 @@ func CryptKeyFromRaw(d []byte) *CryptKey {
 	return &key
 }
 
-func CryptKeyFromString(s string) (*CryptKey, error) {
+func CryptKeyFromHex(s string) (*CryptKey, error) {
 	key, err := hex.DecodeString(s)
 	if err != nil {
 		return nil, err
 	}
 
 	return CryptKeyFromRaw(key), nil
+}
+
+func CryptKeyFromBase64(s string) (*CryptKey, error) {
+	buf := make([]byte, base64.StdEncoding.DecodedLen(len(s)))
+	n, err := base64.StdEncoding.Decode(buf, []byte(s))
+	if err != nil {
+		return nil, err
+	}
+
+	return CryptKeyFromRaw(buf[:n]), nil
 }

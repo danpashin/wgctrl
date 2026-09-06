@@ -41,8 +41,6 @@ func (c *Client) getDevice(device string) (*wgtypes.Device, error) {
 	d.Name = deviceName(device)
 	d.Type = wgtypes.Userspace
 
-	println("total", d.AdvancedSecurity.TransportPacketMagicHeader)
-
 	return d, nil
 }
 
@@ -194,7 +192,7 @@ func (dp *deviceParser) Parse(key, value string) {
 		advancedSecurity.FifthSpecialJunkPacket = parseAwgString(value)
 	case "header_protection_key":
 		hasAdvancedSecurity = true
-		val, err := wgtypes.CryptKeyFromString(value)
+		val, err := wgtypes.CryptKeyFromHex(value)
 		advancedSecurity.HeaderProtectionKey = val
 		if err != nil {
 			return

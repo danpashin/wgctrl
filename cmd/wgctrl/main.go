@@ -112,22 +112,25 @@ func printDevice(d *wgtypes.Device) {
 			fmt.Printf("  i5: %s\n", *advSec.FifthSpecialJunkPacket)
 		}
 		if advSec.HeaderProtectionKey != nil {
-			fmt.Printf("  HeaderProtectionKey: %s\n", advSec.HeaderProtectionKey.HexString())
+			fmt.Printf("  header protection key: %s\n", advSec.HeaderProtectionKey)
 		}
-		if advSec.RekeyAfterTime != nil {
-			fmt.Printf("  RekeyAfterTime: %s\n", advSec.RekeyAfterTime)
+		if advSec.ContentPaddingAddition != nil && !advSec.ContentPaddingAddition.IsZero() {
+			fmt.Printf("  content padding addition: %s\n", advSec.ContentPaddingAddition)
 		}
-		if advSec.RekeyTimeout != nil {
-			fmt.Printf("  RekeyTimeout: %s\n", advSec.RekeyTimeout)
+		if advSec.RekeyAfterTime != nil && !advSec.RekeyAfterTime.IsZero() {
+			fmt.Printf("  rekey after time: %s\n", advSec.RekeyAfterTime)
 		}
-		if advSec.RejectAfterTime != nil {
-			fmt.Printf("  RejectAfterTime: %s\n", advSec.RejectAfterTime)
+		if advSec.RekeyTimeout != nil && !advSec.RekeyTimeout.IsZero() {
+			fmt.Printf("  rekey timeout: %s\n", advSec.RekeyTimeout)
 		}
-		if advSec.KeepaliveTimeout != nil {
-			fmt.Printf("  KeepaliveTimeout: %s\n", advSec.KeepaliveTimeout)
+		if advSec.RejectAfterTime != nil && !advSec.RejectAfterTime.IsZero() {
+			fmt.Printf("  reject after time: %s\n", advSec.RejectAfterTime)
 		}
-		if advSec.HandshakeAttemptsLimit != nil {
-			fmt.Printf("  MaxHandshakeAttempts: %s\n", advSec.HandshakeAttemptsLimit)
+		if advSec.KeepaliveTimeout != nil && !advSec.KeepaliveTimeout.IsZero() {
+			fmt.Printf("  keepalive timeout: %s\n", advSec.KeepaliveTimeout)
+		}
+		if advSec.HandshakeAttemptsLimit != nil && !advSec.HandshakeAttemptsLimit.IsZero() {
+			fmt.Printf("  max handshake attempts: %s\n", advSec.HandshakeAttemptsLimit)
 		}
 		fmt.Printf("  random trailers: %t\n", advSec.RandomTrailers)
 		fmt.Printf("  disable cookies: %t\n", advSec.DisableCookies)

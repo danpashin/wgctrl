@@ -77,6 +77,10 @@ func (r Range32) Uint64() uint64 {
 	return r.r
 }
 
+func (r Range32) IsZero() bool {
+	return r.r == 0
+}
+
 type Range16 struct {
 	r uint32
 }
@@ -115,4 +119,8 @@ func (r Range16) String() string {
 
 func (r Range16) Uint32() uint32 {
 	return r.r
+}
+
+func (r Range16) IsZero() bool {
+	return r.r == 0
 }
