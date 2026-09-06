@@ -167,16 +167,16 @@ func (dp *deviceParser) Parse(key, value string) {
 		advancedSecurity.TransportPacketJunkSize = uint16(dp.parseInt(value))
 	case "h1":
 		hasAdvancedSecurity = true
-		advancedSecurity.InitPacketMagicHeader = value
+		advancedSecurity.InitPacketMagicHeader = wgtypes.Range32FromString(value)
 	case "h2":
 		hasAdvancedSecurity = true
-		advancedSecurity.ResponsePacketMagicHeader = value
+		advancedSecurity.ResponsePacketMagicHeader = wgtypes.Range32FromString(value)
 	case "h3":
 		hasAdvancedSecurity = true
-		advancedSecurity.UnderloadPacketMagicHeader = value
+		advancedSecurity.UnderloadPacketMagicHeader = wgtypes.Range32FromString(value)
 	case "h4":
 		hasAdvancedSecurity = true
-		advancedSecurity.TransportPacketMagicHeader = value
+		advancedSecurity.TransportPacketMagicHeader = wgtypes.Range32FromString(value)
 	case "i1":
 		advancedSecurity.FirstSpecialJunkPacket = parseAwgString(value)
 	case "i2":
@@ -187,6 +187,37 @@ func (dp *deviceParser) Parse(key, value string) {
 		advancedSecurity.FourthSpecialJunkPacket = parseAwgString(value)
 	case "i5":
 		advancedSecurity.FifthSpecialJunkPacket = parseAwgString(value)
+	case "header_protection_key":
+		hasAdvancedSecurity = true
+		val, err := wgtypes.CryptKeyFromString(value)
+		advancedSecurity.HeaderProtectionKey = val
+		if err != nil {
+			return
+		}
+	case "content_padding_addition":
+		hasAdvancedSecurity = true
+		advancedSecurity.ContentPaddingAddition = wgtypes.Range16FromString(value)
+	case "rekey_after_time":
+		hasAdvancedSecurity = true
+		advancedSecurity.RekeyAfterTime = wgtypes.Range16FromString(value)
+	case "rekey_timeout":
+		hasAdvancedSecurity = true
+		advancedSecurity.RekeyTimeout = wgtypes.Range16FromString(value)
+	case "reject_after_time":
+		hasAdvancedSecurity = true
+		advancedSecurity.RejectAfterTime = wgtypes.Range16FromString(value)
+	case "keepalive_timeout":
+		hasAdvancedSecurity = true
+		advancedSecurity.KeepaliveTimeout = wgtypes.Range16FromString(value)
+	case "max_handshake_attempts":
+		hasAdvancedSecurity = true
+		advancedSecurity.HandshakeAttemptsLimit = wgtypes.Range16FromString(value)
+	case "random_trailers":
+		hasAdvancedSecurity = true
+		advancedSecurity.RandomTrailers = true
+	case "disable_cookies":
+		hasAdvancedSecurity = true
+		advancedSecurity.DisableCookies = true
 	}
 
 	if hasAdvancedSecurity {

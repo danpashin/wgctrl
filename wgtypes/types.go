@@ -3,6 +3,7 @@ package wgtypes
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"net"
 	"time"
@@ -77,13 +78,13 @@ type AdvancedSecurity struct {
 	TransportPacketJunkSize uint16
 
 	// H1
-	InitPacketMagicHeader string
+	InitPacketMagicHeader *Range32
 	// H2
-	ResponsePacketMagicHeader string
+	ResponsePacketMagicHeader *Range32
 	// H3
-	UnderloadPacketMagicHeader string
+	UnderloadPacketMagicHeader *Range32
 	// H4
-	TransportPacketMagicHeader string
+	TransportPacketMagicHeader *Range32
 
 	// I1
 	FirstSpecialJunkPacket *string
@@ -95,6 +96,25 @@ type AdvancedSecurity struct {
 	FourthSpecialJunkPacket *string
 	// I5
 	FifthSpecialJunkPacket *string
+
+	// Key for Header Protection
+	HeaderProtectionKey *CryptKey
+	// Random addition to the transport payload
+	ContentPaddingAddition *Range16
+	// Interval before re-handshake
+	RekeyAfterTime *Range16
+	// Handshake timeout
+	RekeyTimeout *Range16
+	// Interval after which the connection initiates a new handshake if no data is received
+	RejectAfterTime *Range16
+	// Interval before sending keepalive
+	KeepaliveTimeout *Range16
+	// Maximum number of handshake retries
+	HandshakeAttemptsLimit *Range16
+	// Adds random trailers to packets
+	RandomTrailers bool
+	// Disables sending Cookie Reply
+	DisableCookies bool
 }
 
 // A Device is a WireGuard device.
@@ -276,16 +296,26 @@ type AdvancedSecurityConfig struct {
 	CookieReplyPacketJunkSize *uint16
 	TransportPacketJunkSize   *uint16
 
-	InitPacketMagicHeader      *string
-	ResponsePacketMagicHeader  *string
-	UnderloadPacketMagicHeader *string
-	TransportPacketMagicHeader *string
+	InitPacketMagicHeader      *Range32
+	ResponsePacketMagicHeader  *Range32
+	UnderloadPacketMagicHeader *Range32
+	TransportPacketMagicHeader *Range32
 
 	FirstSpecialJunkPacket  *string
 	SecondSpecialJunkPacket *string
 	ThirdSpecialJunkPacket  *string
 	FourthSpecialJunkPacket *string
 	FifthSpecialJunkPacket  *string
+
+	HeaderProtectionKey    *CryptKey
+	ContentPaddingAddition *Range16
+	RekeyAfterTime         *Range16
+	RekeyTimeout           *Range16
+	RejectAfterTime        *Range16
+	KeepaliveTimeout       *Range16
+	HandshakeAttemptsLimit *Range16
+	RandomTrailers         *bool
+	DisableCookies         *bool
 }
 
 // A Config is a WireGuard device configuration.
@@ -359,4 +389,27 @@ type PeerConfig struct {
 	// AllowedIPs specifies a list of allowed IP addresses in CIDR notation
 	// for this peer.
 	AllowedIPs []net.IPNet
+}
+
+type CryptKey [32]byte
+
+func (k CryptKey) HexString() string {
+	return hex.EncodeToString(k[:])
+}
+
+func CryptKeyFromRaw(d []byte) *CryptKey {
+	buf := make([]byte, 32)
+	copy(buf, d)
+
+	key := CryptKey(buf)
+	return &key
+}
+
+func CryptKeyFromString(s string) (*CryptKey, error) {
+	key, err := hex.DecodeString(s)
+	if err != nil {
+		return nil, err
+	}
+
+	return CryptKeyFromRaw(key), nil
 }

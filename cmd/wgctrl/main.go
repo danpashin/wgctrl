@@ -18,6 +18,7 @@ func main() {
 
 	clientTypes := [](wgtypes.ClientType){
 		wgtypes.AmneziaClient,
+		wgtypes.NativeClient,
 	}
 
 	for _, clientType := range clientTypes {
@@ -110,6 +111,26 @@ func printDevice(d *wgtypes.Device) {
 		if advSec.FifthSpecialJunkPacket != nil {
 			fmt.Printf("  i5: %s\n", *advSec.FifthSpecialJunkPacket)
 		}
+		if advSec.HeaderProtectionKey != nil {
+			fmt.Printf("  HeaderProtectionKey: %s\n", advSec.HeaderProtectionKey.HexString())
+		}
+		if advSec.RekeyAfterTime != nil {
+			fmt.Printf("  RekeyAfterTime: %s\n", advSec.RekeyAfterTime)
+		}
+		if advSec.RekeyTimeout != nil {
+			fmt.Printf("  RekeyTimeout: %s\n", advSec.RekeyTimeout)
+		}
+		if advSec.RejectAfterTime != nil {
+			fmt.Printf("  RejectAfterTime: %s\n", advSec.RejectAfterTime)
+		}
+		if advSec.KeepaliveTimeout != nil {
+			fmt.Printf("  KeepaliveTimeout: %s\n", advSec.KeepaliveTimeout)
+		}
+		if advSec.HandshakeAttemptsLimit != nil {
+			fmt.Printf("  MaxHandshakeAttempts: %s\n", advSec.HandshakeAttemptsLimit)
+		}
+		fmt.Printf("  random trailers: %t\n", advSec.RandomTrailers)
+		fmt.Printf("  disable cookies: %t\n", advSec.DisableCookies)
 		fmt.Println()
 	}
 }

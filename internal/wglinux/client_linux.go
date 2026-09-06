@@ -28,6 +28,7 @@ type Client struct {
 	c          *genetlink.Conn
 	family     genetlink.Family
 	clientType wgtypes.ClientType
+	version    uint8
 
 	interfaces func(clientType wgtypes.ClientType) ([]string, error)
 }
@@ -78,6 +79,7 @@ func initClient(c *genetlink.Conn, clientType wgtypes.ClientType) (*Client, bool
 		c:          c,
 		family:     f,
 		clientType: clientType,
+		version:    f.Version,
 
 		// By default, gather only WireGuard interfaces using rtnetlink.
 		interfaces: rtnlInterfaces,
@@ -143,7 +145,7 @@ func (c *Client) Device(name string) (*wgtypes.Device, error) {
 func (c *Client) ConfigureDevice(name string, cfg wgtypes.Config) error {
 	// Large configurations are split into batches for use with netlink.
 	for _, b := range buildBatches(cfg) {
-		attrs, err := configAttrs(name, b)
+		attrs, err := configAttrs(name, b, c.version)
 		if err != nil {
 			return err
 		}

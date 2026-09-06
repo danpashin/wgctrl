@@ -18,7 +18,7 @@ import (
 
 // configAttrs creates the required encoded netlink attributes to configure
 // the device specified by name using the non-nil fields in cfg.
-func configAttrs(name string, cfg wgtypes.Config) ([]byte, error) {
+func configAttrs(name string, cfg wgtypes.Config, deviceVersion uint8) ([]byte, error) {
 	ae := netlink.NewAttributeEncoder()
 	ae.String(unix.WGDEVICE_A_IFNAME, name)
 
@@ -43,7 +43,7 @@ func configAttrs(name string, cfg wgtypes.Config) ([]byte, error) {
 		ae.Nested(unix.WGDEVICE_A_PEERS, func(nae *netlink.AttributeEncoder) error {
 			// Netlink arrays use type as an array index.
 			for i, p := range cfg.Peers {
-				nae.Nested(uint16(i), encodePeer(p))
+				nae.Nested(uint16(i), encodePeer(p, deviceVersion))
 			}
 
 			return nil
@@ -90,16 +90,66 @@ func configAttrs(name string, cfg wgtypes.Config) ([]byte, error) {
 		}
 	}
 
-	setAwgString(wginternal.WGDEVICE_A_H1, advancedSecCfg.InitPacketMagicHeader)
-	setAwgString(wginternal.WGDEVICE_A_H2, advancedSecCfg.ResponsePacketMagicHeader)
-	setAwgString(wginternal.WGDEVICE_A_H3, advancedSecCfg.UnderloadPacketMagicHeader)
-	setAwgString(wginternal.WGDEVICE_A_H4, advancedSecCfg.TransportPacketMagicHeader)
+	setRange := func(typ uint16, r *wgtypes.Range32) {
+		if r == nil {
+			return
+		}
+
+		if deviceVersion < 2 {
+			ae.Uint32(typ, r.Uint32())
+		} else if deviceVersion < 3 {
+			ae.String(typ, r.String())
+		} else {
+			ae.Uint64(typ, r.Uint64())
+		}
+	}
+
+	setRange(wginternal.WGDEVICE_A_H1, advancedSecCfg.InitPacketMagicHeader)
+	setRange(wginternal.WGDEVICE_A_H2, advancedSecCfg.ResponsePacketMagicHeader)
+	setRange(wginternal.WGDEVICE_A_H3, advancedSecCfg.UnderloadPacketMagicHeader)
+	setRange(wginternal.WGDEVICE_A_H4, advancedSecCfg.TransportPacketMagicHeader)
 
 	setAwgString(wginternal.WGDEVICE_A_I1, advancedSecCfg.FirstSpecialJunkPacket)
 	setAwgString(wginternal.WGDEVICE_A_I2, advancedSecCfg.SecondSpecialJunkPacket)
 	setAwgString(wginternal.WGDEVICE_A_I3, advancedSecCfg.ThirdSpecialJunkPacket)
 	setAwgString(wginternal.WGDEVICE_A_I4, advancedSecCfg.FourthSpecialJunkPacket)
 	setAwgString(wginternal.WGDEVICE_A_I5, advancedSecCfg.FifthSpecialJunkPacket)
+
+	if advancedSecCfg.HeaderProtectionKey != nil {
+		ae.Bytes(wginternal.WGDEVICE_A_HEADER_PROTECTION_KEY, advancedSecCfg.HeaderProtectionKey[:])
+	}
+	if advancedSecCfg.ContentPaddingAddition != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_CONTENT_PADDING_ADDITION, advancedSecCfg.ContentPaddingAddition.Uint32())
+	}
+	if advancedSecCfg.RekeyAfterTime != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_REKEY_AFTER_TIME, advancedSecCfg.RekeyAfterTime.Uint32())
+	}
+	if advancedSecCfg.RekeyTimeout != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_REKEY_TIMEOUT, advancedSecCfg.RekeyTimeout.Uint32())
+	}
+	if advancedSecCfg.RejectAfterTime != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_REJECT_AFTER_TIME, advancedSecCfg.RejectAfterTime.Uint32())
+	}
+	if advancedSecCfg.KeepaliveTimeout != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_KEEPALIVE_TIMEOUT, advancedSecCfg.KeepaliveTimeout.Uint32())
+	}
+	if advancedSecCfg.HandshakeAttemptsLimit != nil {
+		ae.Uint32(wginternal.WGDEVICE_A_MAX_HANDSHAKE_ATTEMPTS, advancedSecCfg.HandshakeAttemptsLimit.Uint32())
+	}
+	if advancedSecCfg.RandomTrailers != nil {
+		var value uint8 = 0
+		if *advancedSecCfg.RandomTrailers {
+			value = 1
+		}
+		ae.Uint8(wginternal.WGDEVICE_A_RANDOM_TRAILERS, value)
+	}
+	if advancedSecCfg.DisableCookies != nil {
+		var value uint8 = 0
+		if *advancedSecCfg.DisableCookies {
+			value = 1
+		}
+		ae.Uint8(wginternal.WGDEVICE_A_DISABLE_COOKIES, value)
+	}
 
 	return ae.Encode()
 }
@@ -222,7 +272,7 @@ func buildBatches(cfg wgtypes.Config) []wgtypes.Config {
 }
 
 // encodePeer returns a function to encode PeerConfig nested attributes.
-func encodePeer(p wgtypes.PeerConfig) func(ae *netlink.AttributeEncoder) error {
+func encodePeer(p wgtypes.PeerConfig, deviceVersion uint8) func(ae *netlink.AttributeEncoder) error {
 	return func(ae *netlink.AttributeEncoder) error {
 		ae.Bytes(unix.WGPEER_A_PUBLIC_KEY, p.PublicKey[:])
 
@@ -250,7 +300,11 @@ func encodePeer(p wgtypes.PeerConfig) func(ae *netlink.AttributeEncoder) error {
 		}
 
 		if p.PersistentKeepaliveInterval != nil {
-			ae.Uint16(unix.WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL, uint16(p.PersistentKeepaliveInterval.Seconds()))
+			if deviceVersion < 3 {
+				ae.Uint16(unix.WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL, uint16(p.PersistentKeepaliveInterval.Seconds()))
+			} else {
+				ae.Uint32(unix.WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL, uint32(p.PersistentKeepaliveInterval.Seconds()))
+			}
 		}
 
 		// Only apply allowed IPs if necessary.

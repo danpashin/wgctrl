@@ -163,6 +163,34 @@ func writeConfig(w io.Writer, cfg wgtypes.Config) {
 	if advancedSecCfg.FifthSpecialJunkPacket != nil {
 		fmt.Fprintf(w, "i5=%s\n", *advancedSecCfg.FifthSpecialJunkPacket)
 	}
+
+	if advancedSecCfg.HeaderProtectionKey != nil {
+		fmt.Fprintf(w, "header_protection_key=%s\n", advancedSecCfg.HeaderProtectionKey.HexString())
+	}
+	if advancedSecCfg.ContentPaddingAddition != nil {
+		fmt.Fprintf(w, "content_padding_addition=%s\n", advancedSecCfg.ContentPaddingAddition)
+	}
+	if advancedSecCfg.RekeyAfterTime != nil {
+		fmt.Fprintf(w, "rekey_after_time=%s\n", advancedSecCfg.RekeyAfterTime)
+	}
+	if advancedSecCfg.RekeyTimeout != nil {
+		fmt.Fprintf(w, "rekey_timeout=%s\n", advancedSecCfg.RekeyTimeout)
+	}
+	if advancedSecCfg.RejectAfterTime != nil {
+		fmt.Fprintf(w, "reject_after_time=%s\n", advancedSecCfg.RejectAfterTime)
+	}
+	if advancedSecCfg.KeepaliveTimeout != nil {
+		fmt.Fprintf(w, "keepalive_timeout=%s\n", advancedSecCfg.KeepaliveTimeout)
+	}
+	if advancedSecCfg.HandshakeAttemptsLimit != nil {
+		fmt.Fprintf(w, "max_handshake_attempts=%s\n", advancedSecCfg.HandshakeAttemptsLimit)
+	}
+	if advancedSecCfg.RandomTrailers != nil {
+		fmt.Fprintf(w, "random_trailers=%d\n", advancedSecCfg.RandomTrailers)
+	}
+	if advancedSecCfg.DisableCookies != nil {
+		fmt.Fprintf(w, "disable_cookies=%d\n", advancedSecCfg.DisableCookies)
+	}
 }
 
 // hexKey encodes a wgtypes.Key into a hexadecimal string.

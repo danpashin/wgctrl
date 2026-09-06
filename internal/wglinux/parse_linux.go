@@ -59,18 +59,59 @@ func parseDeviceLoop(m genetlink.Message) (*wgtypes.Device, error) {
 
 	advancedSec := &wgtypes.AdvancedSecurity{}
 	hasAdvancedSec := false
+	deviceVersion := m.Header.Version
 
 	d := wgtypes.Device{Type: wgtypes.LinuxKernel}
-	for ad.Next() {
-		parseAwgString := func() *string {
-			value := ad.String()
-			if len(value) == 0 {
-				return nil
-			}
 
-			return &value
+	parseAwgString := func() *string {
+		value := ad.String()
+		if len(value) == 0 {
+			return nil
 		}
 
+		return &value
+	}
+
+	parseRange32 := func() *wgtypes.Range32 {
+		data := ad.Bytes()
+		var value *wgtypes.Range32
+		if MnlDataValidate(data, MNL_TYPE_U32) == nil {
+			value = wgtypes.Range32FromParts(ad.Uint32(), ad.Uint32())
+		}
+		if MnlDataValidate(data, MNL_TYPE_NUL_STRING) == nil {
+			value = wgtypes.Range32FromString(ad.String())
+		}
+		if MnlDataValidate(data, MNL_TYPE_U64) == nil {
+			value = wgtypes.Range32FromSingle(ad.Uint64())
+		}
+
+		if value != nil {
+			hasAdvancedSec = true
+		}
+
+		return value
+	}
+
+	parseRange16 := func() *wgtypes.Range16 {
+		data := ad.Bytes()
+		var value *wgtypes.Range16
+		if MnlDataValidate(data, MNL_TYPE_U32) == nil {
+			value = wgtypes.Range16FromSingle(ad.Uint32())
+		}
+
+		if value != nil {
+			hasAdvancedSec = true
+		}
+
+		return value
+	}
+
+	parseBool := func() bool {
+		val := ad.Uint8()
+		return val > 0
+	}
+
+	for ad.Next() {
 		switch ad.Type() {
 		case unix.WGDEVICE_A_IFINDEX:
 			// Ignored; interface index isn't exposed at all in the userspace
@@ -95,7 +136,7 @@ func parseDeviceLoop(m genetlink.Message) (*wgtypes.Device, error) {
 				d.Peers = make([]wgtypes.Peer, 0, nad.Len())
 				for nad.Next() {
 					nad.Nested(func(nnad *netlink.AttributeDecoder) error {
-						d.Peers = append(d.Peers, parsePeer(nnad))
+						d.Peers = append(d.Peers, parsePeer(nnad, deviceVersion))
 						return nil
 					})
 				}
@@ -117,24 +158,20 @@ func parseDeviceLoop(m genetlink.Message) (*wgtypes.Device, error) {
 		case wginternal.WGDEVICE_A_S2:
 			hasAdvancedSec = true
 			advancedSec.ResponsePacketJunkSize = ad.Uint16()
-		case wginternal.WGDEVICE_A_H1:
-			hasAdvancedSec = true
-			advancedSec.InitPacketMagicHeader = ad.String()
-		case wginternal.WGDEVICE_A_H2:
-			hasAdvancedSec = true
-			advancedSec.ResponsePacketMagicHeader = ad.String()
-		case wginternal.WGDEVICE_A_H3:
-			hasAdvancedSec = true
-			advancedSec.UnderloadPacketMagicHeader = ad.String()
-		case wginternal.WGDEVICE_A_H4:
-			hasAdvancedSec = true
-			advancedSec.TransportPacketMagicHeader = ad.String()
 		case wginternal.WGDEVICE_A_S3:
 			hasAdvancedSec = true
 			advancedSec.CookieReplyPacketJunkSize = ad.Uint16()
 		case wginternal.WGDEVICE_A_S4:
 			hasAdvancedSec = true
 			advancedSec.TransportPacketJunkSize = ad.Uint16()
+		case wginternal.WGDEVICE_A_H1:
+			advancedSec.InitPacketMagicHeader = parseRange32()
+		case wginternal.WGDEVICE_A_H2:
+			advancedSec.ResponsePacketMagicHeader = parseRange32()
+		case wginternal.WGDEVICE_A_H3:
+			advancedSec.UnderloadPacketMagicHeader = parseRange32()
+		case wginternal.WGDEVICE_A_H4:
+			advancedSec.TransportPacketMagicHeader = parseRange32()
 		case wginternal.WGDEVICE_A_I1:
 			hasAdvancedSec = true
 			advancedSec.FirstSpecialJunkPacket = parseAwgString()
@@ -150,6 +187,33 @@ func parseDeviceLoop(m genetlink.Message) (*wgtypes.Device, error) {
 		case wginternal.WGDEVICE_A_I5:
 			hasAdvancedSec = true
 			advancedSec.FifthSpecialJunkPacket = parseAwgString()
+		case wginternal.WGDEVICE_A_HEADER_PROTECTION_KEY:
+			hasAdvancedSec = true
+			advancedSec.HeaderProtectionKey = wgtypes.CryptKeyFromRaw(ad.Bytes())
+		case wginternal.WGDEVICE_A_CONTENT_PADDING_ADDITION:
+			hasAdvancedSec = true
+			advancedSec.ContentPaddingAddition = parseRange16()
+		case wginternal.WGDEVICE_A_REKEY_AFTER_TIME:
+			hasAdvancedSec = true
+			advancedSec.RekeyAfterTime = parseRange16()
+		case wginternal.WGDEVICE_A_REKEY_TIMEOUT:
+			hasAdvancedSec = true
+			advancedSec.RekeyTimeout = parseRange16()
+		case wginternal.WGDEVICE_A_REJECT_AFTER_TIME:
+			hasAdvancedSec = true
+			advancedSec.RejectAfterTime = parseRange16()
+		case wginternal.WGDEVICE_A_KEEPALIVE_TIMEOUT:
+			hasAdvancedSec = true
+			advancedSec.KeepaliveTimeout = parseRange16()
+		case wginternal.WGDEVICE_A_MAX_HANDSHAKE_ATTEMPTS:
+			hasAdvancedSec = true
+			advancedSec.HandshakeAttemptsLimit = parseRange16()
+		case wginternal.WGDEVICE_A_RANDOM_TRAILERS:
+			hasAdvancedSec = true
+			advancedSec.RandomTrailers = parseBool()
+		case wginternal.WGDEVICE_A_DISABLE_COOKIES:
+			hasAdvancedSec = true
+			advancedSec.DisableCookies = parseBool()
 		}
 	}
 
@@ -165,7 +229,7 @@ func parseDeviceLoop(m genetlink.Message) (*wgtypes.Device, error) {
 }
 
 // parseAllowedIPs parses a wgtypes.Peer from a netlink attribute payload.
-func parsePeer(ad *netlink.AttributeDecoder) wgtypes.Peer {
+func parsePeer(ad *netlink.AttributeDecoder, deviceVersion uint8) wgtypes.Peer {
 	var p wgtypes.Peer
 	for ad.Next() {
 		switch ad.Type() {
@@ -177,7 +241,11 @@ func parsePeer(ad *netlink.AttributeDecoder) wgtypes.Peer {
 			p.Endpoint = &net.UDPAddr{}
 			ad.Do(parseSockaddr(p.Endpoint))
 		case unix.WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL:
-			p.PersistentKeepaliveInterval = time.Duration(ad.Uint16()) * time.Second
+			if deviceVersion < 3 {
+				p.PersistentKeepaliveInterval = time.Duration(ad.Uint16()) * time.Second
+			} else {
+				p.PersistentKeepaliveInterval = time.Duration(ad.Uint32()) * time.Second
+			}
 		case unix.WGPEER_A_LAST_HANDSHAKE_TIME:
 			ad.Do(parseTimespec(&p.LastHandshakeTime))
 		case unix.WGPEER_A_RX_BYTES:
